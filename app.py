@@ -8,7 +8,7 @@ from google.genai import types
 load_dotenv()
 
 app = Flask(__name__)
-client = genai.Client(api_key=os.getenv("AQ.Ab8RN6Ie6JxQqt1YnIDcwhGOw-U8ovOPNnZHjQSNcu-fNeyL_Q"))
+client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
 SYSTEM_PROMPT = """Eres el asistente de TouristSV, un guía turístico experto en El Salvador.
 Tu trabajo: recomendar lugares reales de El Salvador según el perfil del turista
