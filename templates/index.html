@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TouristSV — Tu guía inteligente de El Salvador</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bosque:   { DEFAULT: '#2D6A23' },
+            lima:     { DEFAULT: '#78C034', soft: '#EDF7E2' },
+            arena:    { DEFAULT: '#D6D1C2' },
+            turquesa: { DEFAULT: '#17B5E8', soft: '#E4F6FD' },
+            real:     { DEFAULT: '#1A6DE8', dark: '#1558BC', soft: '#E7EFFD' },
+            tinta:    { DEFAULT: '#111111', suave: '#4A4A4A' },
+          },
+          fontFamily: { mono: ['"JetBrains Mono"', 'monospace'] },
+        },
+      },
+    };
+  </script>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #D6D1C2; border-radius: 3px; }
+    .typing-dot { animation: blink 1.2s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 0%, 60%, 100% { opacity: 0.25; } 30% { opacity: 1; } }
+    .leaflet-container { background: #F4F2EC; }
+  </style>
+</head>
+
+<body class="bg-white text-tinta font-mono h-screen overflow-hidden">
+
+  <div class="flex h-full">
+
+    <!-- ============ PANEL IZQUIERDO: CHAT ============ -->
+    <aside class="w-[42%] min-w-[380px] flex flex-col border-r border-arena bg-white">
+
+      <!-- Header -->
+      <header class="px-5 py-4 border-b border-arena flex items-center gap-3">
+        <span class="text-bosque font-bold text-2xl tracking-tight">01</span>
+        <div>
+          <p class="text-bosque text-[11px] tracking-widest font-bold">[TOURISTSV]</p>
+          <h1 class="text-sm font-medium text-tinta">Tu guía inteligente de El Salvador</h1>
+        </div>
+      </header>
+
+      <!-- Mensajes -->
+      <main id="chat" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+
+        <!-- Tarjetas de mood (estado inicial) -->
+        <div id="mood-cards" class="space-y-3">
+          <p class="text-xs text-tinta-suave">Elige tu mood y armamos tu ruta:</p>
+
+          <div class="grid grid-cols-2 gap-2 text-sm">
+            <button data-mood="vibe" data-value="Playa" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">🏖 Playa</button>
+            <button data-mood="vibe" data-value="Montaña" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">⛰ Montaña</button>
+            <button data-mood="budget" data-value="Mochilero" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">🎒 Mochilero</button>
+            <button data-mood="budget" data-value="Premium" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">💎 Premium</button>
+            <button data-mood="energy" data-value="Tranquilidad" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">🌙 Tranquilidad</button>
+            <button data-mood="energy" data-value="Adrenalina" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">⚡ Adrenalina</button>
+          </div>
+
+          <button id="start-route" disabled
+            class="w-full py-3 rounded-lg bg-real text-white font-bold text-sm disabled:opacity-30 disabled:cursor-not-allowed hover:bg-real-dark transition">
+            Armar mi ruta →
+          </button>
+        </div>
+
+      </main>
+
+      <!-- Input -->
+      <footer class="p-4 border-t border-arena">
+        <form id="chat-form" class="flex gap-2">
+          <input id="chat-input" type="text" placeholder="Pregúntale a tu guía..."
+            class="flex-1 bg-white border border-arena rounded-lg px-4 py-2.5 text-sm text-tinta placeholder-tinta-suave/60 focus:outline-none focus:border-real" />
+          <button type="submit"
+            class="px-4 rounded-lg bg-real text-white font-bold hover:bg-real-dark transition">➤</button>
+        </form>
+      </footer>
+    </aside>
+
+    <!-- ============ PANEL DERECHO: MAPA ============ -->
+    <section class="flex-1 relative">
+      <!-- Barra de contexto -->
+      <div id="context-bar" class="absolute top-4 left-4 z-[1000] flex gap-2 flex-wrap"></div>
+      <div id="map" class="h-full w-full"></div>
+    </section>
+
+  </div>
+
+  <script>
+    // ================== ESTADO ==================
+    const state = {
+      moods: { vibe: null, budget: null, energy: null },
+      history: [],       // historial para la IA [{role, content}]
+      markers: [],
+      routeLine: null,
+    };
+
+    // ================== MAPA ==================
+    const map = L.map('map', { zoomControl: false }).setView([13.7, -89.2], 9);
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      maxZoom: 19,
+    }).addTo(map);
+
+    const pinIcon = (num) => L.divIcon({
+      className: '',
+      html: `<div style="background:#1A6DE8;color:#FFFFFF;width:28px;height:28px;border-radius:50%;
+             display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;
+             border:2px solid #FFFFFF;box-shadow:0 1px 4px rgba(0,0,0,0.35);">${num}</div>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 14],
+    });
+
+    function clearMap() {
+      state.markers.forEach(m => map.removeLayer(m));
+      state.markers = [];
+      if (state.routeLine) { map.removeLayer(state.routeLine); state.routeLine = null; }
+    }
+
+    function drawPlaces(places) {
+      if (!places || !places.length) return;
+      clearMap();
+
+      const coords = [];
+      places.forEach((p, i) => {
+        // Dibuja cada marcador con un pequeño delay (ruta "viva")
+        setTimeout(() => {
+          const marker = L.marker([p.lat, p.lng], { icon: pinIcon(i + 1) })
+            .addTo(map)
+            .bindPopup(`<b style="color:#1A6DE8">${p.name}</b><br><span style="font-size:12px;color:#111">${p.description}</span>`);
+          state.markers.push(marker);
+          coords.push([p.lat, p.lng]);
+
+          if (coords.length > 1) {
+            if (state.routeLine) map.removeLayer(state.routeLine);
+            state.routeLine = L.polyline(coords, {
+              color: '#2D6A23', weight: 3, dashArray: '8 8', opacity: 0.9,
+            }).addTo(map);
+          }
+          if (i === places.length - 1) {
+            map.flyToBounds(L.latLngBounds(coords), { padding: [60, 60], duration: 1.2 });
+          }
+        }, i * 500);
+      });
+    }
+
+    // ================== CHAT UI ==================
+    const chatEl = document.getElementById('chat');
+
+    function addBubble(text, who) {
+      const div = document.createElement('div');
+      div.className = who === 'user'
+        ? 'ml-auto max-w-[80%] bg-lima-soft border border-bosque/40 text-tinta rounded-xl rounded-br-sm px-4 py-2.5 text-sm'
+        : 'mr-auto max-w-[90%] bg-real-soft border border-real/40 text-tinta rounded-xl rounded-bl-sm px-4 py-2.5 text-sm leading-relaxed';
+      div.textContent = text;
+      chatEl.appendChild(div);
+      chatEl.scrollTop = chatEl.scrollHeight;
+      return div;
+    }
+
+    function addTyping() {
+      const div = document.createElement('div');
+      div.id = 'typing';
+      div.className = 'mr-auto bg-real-soft border border-real/40 rounded-xl px-4 py-3 flex gap-1.5';
+      div.innerHTML = '<span class="typing-dot w-1.5 h-1.5 bg-real rounded-full"></span>'.repeat(3);
+      chatEl.appendChild(div);
+      chatEl.scrollTop = chatEl.scrollHeight;
+    }
+    const removeTyping = () => document.getElementById('typing')?.remove();
+
+    // ================== BARRA DE CONTEXTO ==================
+    const moodEmoji = { 'Playa': '🏖', 'Montaña': '⛰', 'Mochilero': '🎒', 'Premium': '💎', 'Tranquilidad': '🌙', 'Adrenalina': '⚡' };
+
+    function renderContextBar() {
+      const bar = document.getElementById('context-bar');
+      bar.innerHTML = '';
+      Object.values(state.moods).filter(Boolean).forEach(v => {
+        const chip = document.createElement('span');
+        chip.className = 'bg-white border border-bosque/50 text-tinta rounded-full px-3 py-1.5 text-xs shadow-sm';
+        chip.textContent = `${moodEmoji[v]} ${v}`;
+        bar.appendChild(chip);
+      });
+    }
+
+    // ================== LÓGICA IA ==================
+    async function sendToAI(message) {
+      addTyping();
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, history: state.history }),
+        });
+        const data = await res.json();
+        removeTyping();
+
+        addBubble(data.reply, 'ai');
+        state.history.push({ role: 'user', content: message });
+        state.history.push({ role: 'assistant', content: JSON.stringify(data) });
+
+        drawPlaces(data.places);
+      } catch (err) {
+        removeTyping();
+        addBubble('No pude conectarme con el guía. Revisa tu conexión o tu API key.', 'ai');
+      }
+    }
+
+    // ================== EVENTOS ==================
+    // Tarjetas de mood
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const { mood, value } = btn.dataset;
+        state.moods[mood] = value;
+
+        // Visual: desmarca hermanos, marca este
+        document.querySelectorAll(`[data-mood="${mood}"]`).forEach(b =>
+          b.classList.remove('border-bosque', 'ring-2', 'ring-bosque/40', 'font-bold'));
+        btn.classList.add('border-bosque', 'ring-2', 'ring-bosque/40', 'font-bold');
+
+        renderContextBar();
+
+        // Habilita el botón si las 3 categorías están elegidas
+        const ready = Object.values(state.moods).every(Boolean);
+        document.getElementById('start-route').disabled = !ready;
+      });
+    });
+
+    // Botón "Armar mi ruta"
+    document.getElementById('start-route').addEventListener('click', () => {
+      const { vibe, budget, energy } = state.moods;
+      document.getElementById('mood-cards').remove();
+      const msg = `Quiero un plan de ${vibe.toLowerCase()}, presupuesto ${budget.toLowerCase()}, con vibra de ${energy.toLowerCase()}. Ármame una ruta.`;
+      addBubble(msg, 'user');
+      sendToAI(msg);
+    });
+
+    // Chat libre
+    document.getElementById('chat-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const msg = input.value.trim();
+      if (!msg) return;
+      input.value = '';
+      addBubble(msg, 'user');
+      sendToAI(msg);
+    });
+  </script>
+</body>
+</html>

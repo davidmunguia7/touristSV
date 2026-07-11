@@ -1,0 +1,13 @@
+# Entornos virtuales
+.venv/
+venv/
+
+# Variables de entorno secretas (¡Aquí está tu API Key!)
+.env
+
+# Caché de Python
+__pycache__/
+*.pyc
+
+# Archivos de VS Code
+.vscode/
