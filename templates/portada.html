@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TouristSV — Selecciona tu perfil</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bosque: {
+              DEFAULT: '#245B3C',
+              dark: '#163D28',
+              soft: '#E8F2EC'
+            },
+            lima: {
+              DEFAULT: '#8BC34A',
+              soft: '#EEF7E5'
+            },
+            arena: {
+              DEFAULT: '#D9D4C8',
+              soft: '#F7F5EF'
+            },
+            real: {
+              DEFAULT: '#1668D8',
+              dark: '#0F52B1',
+              soft: '#E8F0FD'
+            },
+            tinta: {
+              DEFAULT: '#17201B',
+              suave: '#5C675F'
+            }
+          },
+          fontFamily: {
+            sans: ['Manrope', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          boxShadow: {
+            card: '0 24px 70px rgba(23, 32, 27, 0.10)',
+            hover: '0 30px 85px rgba(23, 32, 27, 0.16)'
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    .page-grid {
+      background-color: #f8f8f3;
+      background-image:
+        linear-gradient(rgba(36, 91, 60, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(36, 91, 60, 0.045) 1px, transparent 1px);
+      background-size: 34px 34px;
+    }
+
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(145deg, rgba(255,255,255,.90), rgba(255,255,255,.30));
+      pointer-events: none;
+    }
+
+    .profile-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-card:hover .profile-icon,
+    .profile-card:focus-visible .profile-icon {
+      transform: translateY(-8px) scale(1.03);
+    }
+
+    .profile-card:hover .profile-arrow,
+    .profile-card:focus-visible .profile-arrow {
+      transform: translateX(5px);
+    }
+  </style>
+</head>
+
+<body class="page-grid min-h-screen overflow-x-hidden font-sans text-tinta">
+  <div class="pointer-events-none fixed -left-24 -top-24 h-72 w-72 rounded-full bg-lima/20 blur-3xl"></div>
+  <div class="pointer-events-none fixed -bottom-32 -right-24 h-96 w-96 rounded-full bg-real/10 blur-3xl"></div>
+
+  <header class="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6 md:px-10">
+    <a href="/" class="flex items-center gap-3" aria-label="Ir al inicio de TouristSV">
+      <span class="grid h-11 w-11 place-items-center rounded-2xl bg-bosque text-xs font-extrabold text-white shadow-lg shadow-bosque/20">
+        TSV
+      </span>
+
+      <span>
+        <span class="block font-mono text-xs font-bold uppercase tracking-[0.22em] text-bosque">
+          TouristSV
+        </span>
+        <span class="block text-xs text-tinta-suave">
+          Explora El Salvador
+        </span>
+      </span>
+    </a>
+
+    <span class="hidden rounded-full border border-bosque/15 bg-white/80 px-4 py-2 text-xs font-semibold text-bosque shadow-sm backdrop-blur sm:inline-flex">
+      🇸🇻 El Salvador
+    </span>
+  </header>
+
+  <main class="relative z-10 mx-auto flex min-h-[calc(100vh-100px)] w-full max-w-6xl flex-col items-center justify-center px-5 pb-12 md:px-10">
+    <section class="mb-9 max-w-2xl text-center md:mb-12">
+      <span class="mb-4 inline-flex rounded-full border border-bosque/15 bg-white/80 px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-bosque shadow-sm backdrop-blur">
+        Comencemos
+      </span>
+
+      <h1 class="text-4xl font-extrabold tracking-[-0.045em] sm:text-5xl md:text-6xl">
+        ¿Qué eres tú?
+      </h1>
+
+      <p class="mx-auto mt-4 max-w-xl text-sm leading-6 text-tinta-suave sm:text-base">
+        Selecciona cómo deseas utilizar TouristSV para adaptar tu experiencia.
+      </p>
+    </section>
+
+    <section class="grid w-full max-w-4xl gap-5 md:grid-cols-2 md:gap-7">
+      <!-- TURISTA: abre el index principal servido en la ruta / -->
+      <a
+        href="/"
+        class="profile-card group relative min-h-[350px] overflow-hidden rounded-[2rem] border border-bosque/15 bg-white/80 p-6 text-left shadow-card backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-bosque/45 hover:shadow-hover focus:outline-none focus-visible:ring-4 focus-visible:ring-bosque/20 sm:p-8"
+      >
+        <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-lima/25"></div>
+
+        <div class="flex h-full flex-col">
+          <div class="profile-icon flex flex-1 items-center justify-center transition duration-300">
+            <svg viewBox="0 0 220 170" class="h-44 w-full max-w-[260px] text-bosque" fill="none" aria-hidden="true">
+              <path d="M42 138c8-32 29-51 57-56" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+              <path d="M178 138c-8-32-29-51-57-56" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+              <circle cx="110" cy="62" r="28" fill="#EEF7E5" stroke="currentColor" stroke-width="5" />
+              <path d="M84 128c4-22 13-36 26-36s22 14 26 36" fill="#E8F2EC" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+              <path d="M110 25V9M110 9l-8 9M110 9l8 9" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M73 54H42M42 54l11-9M42 54l11 9" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M147 54h31M178 54l-11-9M178 54l-11 9" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+
+          <div class="mt-6 flex items-end justify-between gap-4">
+            <div>
+              <span class="mb-2 block font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-bosque/70">
+                Opción 01
+              </span>
+              <h2 class="text-2xl font-extrabold tracking-tight">Turista</h2>
+              <p class="mt-2 max-w-xs text-sm leading-6 text-tinta-suave">
+                Descubre lugares, crea rutas y recibe recomendaciones personalizadas.
+              </p>
+            </div>
+
+            <span class="profile-arrow grid h-11 w-11 shrink-0 place-items-center rounded-full bg-bosque text-xl text-white transition duration-300">
+              →
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- GUÍA: por ahora muestra un aviso -->
+      <button
+        id="guide-card"
+        type="button"
+        class="profile-card group relative min-h-[350px] overflow-hidden rounded-[2rem] border border-real/15 bg-white/80 p-6 text-left shadow-card backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-real/45 hover:shadow-hover focus:outline-none focus-visible:ring-4 focus-visible:ring-real/20 sm:p-8"
+      >
+        <div class="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-real/10"></div>
+
+        <div class="flex h-full flex-col">
+          <div class="profile-icon flex flex-1 items-center justify-center transition duration-300">
+            <svg viewBox="0 0 240 170" class="h-44 w-full max-w-[280px] text-real" fill="none" aria-hidden="true">
+              <path d="M40 37c22-8 47-7 70 3v95c-23-10-48-11-70-3V37Z" fill="#E8F0FD" stroke="currentColor" stroke-width="5" stroke-linejoin="round" />
+              <path d="M200 37c-22-8-47-7-70 3v95c23-10 48-11 70-3V37Z" fill="#F4F7FE" stroke="currentColor" stroke-width="5" stroke-linejoin="round" />
+              <path d="M120 44v94" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+              <path d="M57 58c14-4 26-4 38-1M57 75c14-4 26-4 38-1M57 92c14-4 26-4 38-1" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".55" />
+              <path d="M145 62c10-6 22-8 37-5M145 79c10-6 22-8 37-5" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".55" />
+              <path d="M158 103l9-15 9 15 15 5-15 6-9 15-9-15-15-6 15-5Z" fill="#8BC34A" stroke="currentColor" stroke-width="4" stroke-linejoin="round" />
+            </svg>
+          </div>
+
+          <div class="mt-6 flex items-end justify-between gap-4">
+            <div>
+              <span class="mb-2 block font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-real/70">
+                Opción 02
+              </span>
+              <h2 class="text-2xl font-extrabold tracking-tight">Guía turístico</h2>
+              <p class="mt-2 max-w-xs text-sm leading-6 text-tinta-suave">
+                Publica experiencias y ayuda a viajeros a conocer destinos increíbles.
+              </p>
+            </div>
+
+            <span class="profile-arrow grid h-11 w-11 shrink-0 place-items-center rounded-full bg-real text-xl text-white transition duration-300">
+              →
+            </span>
+          </div>
+        </div>
+      </button>
+    </section>
+  </main>
+
+  <!-- Aviso para el panel de guía -->
+  <div id="guide-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-tinta/35 px-5 backdrop-blur-sm">
+    <div class="w-full max-w-md rounded-3xl border border-white/60 bg-white p-7 text-center shadow-2xl">
+      <span class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-real-soft text-2xl">📘</span>
+      <h2 class="mt-5 text-2xl font-extrabold">Panel de guías</h2>
+      <p class="mt-3 text-sm leading-6 text-tinta-suave">
+        Esta sección todavía está en construcción. El acceso de turista ya está conectado con tu index.
+      </p>
+      <button id="close-modal" type="button" class="mt-6 w-full rounded-xl bg-real px-5 py-3 text-sm font-bold text-white transition hover:bg-real-dark">
+        Entendido
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const guideCard = document.getElementById('guide-card');
+    const guideModal = document.getElementById('guide-modal');
+    const closeModal = document.getElementById('close-modal');
+
+    function openGuideModal() {
+      guideModal.classList.remove('hidden');
+      guideModal.classList.add('flex');
+    }
+
+    function closeGuideModal() {
+      guideModal.classList.add('hidden');
+      guideModal.classList.remove('flex');
+    }
+
+    guideCard.addEventListener('click', openGuideModal);
+    closeModal.addEventListener('click', closeGuideModal);
+
+    guideModal.addEventListener('click', (event) => {
+      if (event.target === guideModal) closeGuideModal();
+    });
+  </script>
+</body>
+</html>
