@@ -47,6 +47,54 @@
     }
     .fade-in { animation: fadeIn 0.35s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    /* Marcadores destacados para regeneración cultural */
+    .culture-marker-wrap {
+      position: relative;
+      width: 36px;
+      height: 38px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      filter: drop-shadow(0 5px 8px rgba(109, 76, 0, 0.28));
+    }
+
+    .culture-marker-pin {
+      width: 32px;
+      height: 32px;
+      border-radius: 50% 50% 50% 8px;
+      transform: rotate(-45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #FFF4B8, #F6C945);
+      border: 2px solid #FFFFFF;
+      box-shadow:
+        0 0 0 2px #A87300,
+        0 4px 12px rgba(168, 115, 0, 0.35);
+      animation: cultureGlow 2.2s ease-in-out infinite;
+    }
+
+    .culture-marker-symbol {
+      transform: rotate(45deg);
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    @keyframes cultureGlow {
+      0%, 100% {
+        box-shadow:
+          0 0 0 2px #A87300,
+          0 4px 12px rgba(168, 115, 0, 0.28);
+      }
+      50% {
+        box-shadow:
+          0 0 0 4px rgba(246, 201, 69, 0.42),
+          0 6px 18px rgba(168, 115, 0, 0.45);
+      }
+    }
+      50% { transform: translateX(-50%) translateY(-3px); }
+    }
   </style>
 </head>
 
@@ -102,36 +150,182 @@
             </button>
           </div>
         </div>
-
-        <!-- Footer: registro de guías -->
-        <a href="/guia"
-          class="absolute bottom-5 left-1/2 -translate-x-1/2 text-xs text-tinta-suave hover:text-bosque transition whitespace-nowrap">
-          ¿Eres guía turístico? <span class="font-bold underline underline-offset-2">Regístrate aquí →</span>
-        </a>
       </div>
 
-      <!-- ===== VISTA 2: MOODS (pantalla completa del panel) ===== -->
-      <div id="mood-view" class="hidden flex-1 flex-col px-6 py-6 fade-in overflow-y-auto">
-        <button id="back-home" class="self-start text-sm text-tinta-suave hover:text-tinta mb-4">← Volver</button>
-        <h2 class="text-2xl font-bold text-tinta mb-1">Elige tu mood</h2>
-        <p class="text-sm text-tinta-suave mb-6">Selecciona una opción de cada fila y armamos tu ruta.</p>
+      <!-- ===== VISTA 2: MOODS ===== -->
+      <div id="mood-view" class="hidden flex-1 flex-col fade-in overflow-hidden">
+        <div class="px-6 pt-6">
+          <button id="back-home" class="self-start text-sm text-tinta-suave hover:text-tinta mb-4">
+            ← Volver
+          </button>
 
-        <div class="grid grid-cols-3 gap-3 flex-1 content-start">
-          <button data-mood="vibe" data-value="Playa" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🏖<br/>Playa</button>
-          <button data-mood="vibe" data-value="Montaña" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">⛰<br/>Montaña</button>
-          <button data-mood="vibe" data-value="Ciudad" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🏙<br/>Ciudad</button>
-          <button data-mood="budget" data-value="Mochilero" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🎒<br/>Mochilero</button>
-          <button data-mood="budget" data-value="Intermedio" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">💵<br/>Intermedio</button>
-          <button data-mood="budget" data-value="Premium" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">💎<br/>Premium</button>
-          <button data-mood="energy" data-value="Tranquilidad" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🌙<br/>Tranquilidad</button>
-          <button data-mood="energy" data-value="Fiesta" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🎉<br/>Fiesta</button>
-          <button data-mood="energy" data-value="Adrenalina" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">⚡<br/>Adrenalina</button>
+          <h2 class="text-2xl font-bold text-tinta mb-1">Planea tu ruta</h2>
+          <p class="text-sm text-tinta-suave mb-5">
+            Elige una opción de cada sección para crear una ruta acorde a tu viaje.
+          </p>
         </div>
 
-        <button id="start-route" disabled
-          class="w-full py-4 mt-6 rounded-2xl bg-real text-white font-bold text-base disabled:opacity-30 disabled:cursor-not-allowed hover:bg-real-dark transition">
-          Armar mi ruta →
-        </button>
+        <div id="mood-scroll" class="flex-1 overflow-y-auto px-6 pb-6">
+          <div class="space-y-7 pb-4">
+
+          <!-- TIPO DE LUGAR -->
+          <section class="space-y-3">
+            <div>
+              <h3 class="font-sans font-extrabold text-base">1. ¿Qué tipo de lugar buscas?</h3>
+              <p class="text-xs text-tinta-suave mt-1">Selecciona el entorno principal.</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <button data-mood="destination" data-value="Playa"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🏖</span>Playa
+              </button>
+
+              <button data-mood="destination" data-value="Montaña"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">⛰</span>Montaña
+              </button>
+
+              <button data-mood="destination" data-value="Ciudad"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🏙</span>Ciudad
+              </button>
+
+              <button data-mood="destination" data-value="Cultura"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🏛</span>Cultura
+              </button>
+
+              <button data-mood="destination" data-value="Naturaleza"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🌿</span>Naturaleza
+              </button>
+            </div>
+          </section>
+
+          <!-- PRESUPUESTO -->
+          <section class="space-y-3">
+            <div>
+              <h3 class="font-sans font-extrabold text-base">2. ¿Cuál es tu presupuesto?</h3>
+              <p class="text-xs text-tinta-suave mt-1">Elige el nivel de gasto que prefieres.</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <button data-mood="budget" data-value="Mochilero"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🎒</span>Mochilero
+              </button>
+
+              <button data-mood="budget" data-value="Intermedio"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">💵</span>Intermedio
+              </button>
+
+              <button data-mood="budget" data-value="Premium"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">💎</span>Premium
+              </button>
+            </div>
+          </section>
+
+          <!-- AMBIENTE -->
+          <section class="space-y-3">
+            <div>
+              <h3 class="font-sans font-extrabold text-base">3. ¿Qué ambiente buscas?</h3>
+              <p class="text-xs text-tinta-suave mt-1">Elige cómo quieres sentir el viaje.</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <button data-mood="energy" data-value="Tranquilidad"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🌙</span>Tranquilidad
+              </button>
+
+              <button data-mood="energy" data-value="Fiesta"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🎉</span>Fiesta
+              </button>
+
+              <button data-mood="energy" data-value="Adrenalina"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">⚡</span>Adrenalina
+              </button>
+            </div>
+          </section>
+
+          <!-- TIEMPO DE VIAJE -->
+          <section class="space-y-3">
+            <div>
+              <h3 class="font-sans font-extrabold text-base">4. ¿Cuánto tiempo quieres viajar?</h3>
+              <p class="text-xs text-tinta-suave mt-1">
+                Usaremos este tiempo para limitar las distancias entre paradas.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <button data-mood="travelTime" data-value="Hasta 30 minutos"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🕒</span>Hasta 30 min
+              </button>
+
+              <button data-mood="travelTime" data-value="Hasta 1 hora"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🚗</span>Hasta 1 hora
+              </button>
+
+              <button data-mood="travelTime" data-value="Hasta 2 horas"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🛣</span>Hasta 2 horas
+              </button>
+
+              <button data-mood="travelTime" data-value="Sin límite de distancia"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🗺</span>Sin límite
+              </button>
+            </div>
+          </section>
+
+          <!-- COMPAÑÍA -->
+          <section class="space-y-3">
+            <div>
+              <h3 class="font-sans font-extrabold text-base">5. ¿Con quién viajas?</h3>
+              <p class="text-xs text-tinta-suave mt-1">Ayúdanos a adaptar el tipo de experiencia.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <button data-mood="company" data-value="Solo"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">🚶</span>Solo
+              </button>
+
+              <button data-mood="company" data-value="Pareja"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">❤️</span>Pareja
+              </button>
+
+              <button data-mood="company" data-value="Familia"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">👨‍👩‍👧</span>Familia
+              </button>
+
+              <button data-mood="company" data-value="Amigos"
+                class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-5 hover:border-bosque transition text-sm">
+                <span class="block text-xl mb-1">👥</span>Amigos
+              </button>
+            </div>
+          </section>
+          </div>
+        </div>
+
+        <div class="shrink-0 border-t border-arena bg-white px-6 py-4 shadow-[0_-8px_24px_rgba(17,17,17,0.06)]">
+          <button id="start-route" disabled
+            class="w-full py-4 rounded-2xl bg-real text-white font-bold text-base disabled:opacity-30 disabled:cursor-not-allowed hover:bg-real-dark transition shadow-lg shadow-real/10">
+            Armar mi ruta →
+          </button>
+          <p id="mood-progress" class="mt-2 text-center text-[11px] text-tinta-suave">
+            Selecciona una opción en las 5 secciones.
+          </p>
+        </div>
       </div>
 
       <!-- ===== VISTA 3: CHAT ===== -->
@@ -176,6 +370,14 @@
         ◀
       </button>
       <div id="context-bar" class="absolute top-4 left-4 z-[1000] flex gap-2 flex-wrap"></div>
+
+      <div
+        class="absolute right-4 top-4 z-[1000] rounded-2xl border border-amber-300 bg-white/95 px-3 py-2 text-[11px] font-bold text-amber-800 shadow-md backdrop-blur"
+        title="Estos sitios tienen potencial de recuperación mediante arte, cultura o patrimonio"
+      >
+        Regeneración cultural
+      </div>
+
       <div id="map" class="h-full w-full"></div>
     </section>
 
@@ -184,7 +386,13 @@
   <script>
     // ================== ESTADO ==================
     const state = {
-      moods: { vibe: null, budget: null, energy: null },
+      moods: {
+        destination: null,
+        budget: null,
+        energy: null,
+        travelTime: null,
+        company: null,
+      },
       history: [],
       markers: [],
       routeLine: null,
@@ -220,169 +428,210 @@
       naturaleza: '🌿', nature: '🌿', lake: '💧', ciudad: '🏙', city: '🏙',
     };
 
-    const defaultIcon = (category) => L.divIcon({
-      className: '',
-      html: `<div style="background:#FFFFFF;border:2px solid #2D6A23;width:26px;height:26px;
-             border-radius:50%;display:flex;align-items:center;justify-content:center;
-             font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,0.3);">${categoryEmoji[(category || '').toLowerCase()] || '📍'}</div>`,
-      iconSize: [26, 26],
-      iconAnchor: [13, 13],
-    });
+    function normalizePlaceText(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+    }
 
-    function popupHTML(p, color, extraHTML = '', usedActions = []) {
+    function isCulturalRegenerationPlace(place) {
+      const category = normalizePlaceText(place.category);
+      const description = normalizePlaceText(place.description);
+      const tags = Array.isArray(place.tags)
+        ? place.tags.map(normalizePlaceText)
+        : [];
+
+      const combinedText = [
+        category,
+        description,
+        ...tags,
+      ].join(' ');
+
+      const culturalSignals = [
+        'regeneracion cultural',
+        'regeneracion',
+        'patrimonio',
+        'patrimonio industrial',
+        'mercado historico',
+        'centro historico',
+        'barrio historico',
+        'arte urbano',
+        'pueblo cultural',
+        'memoria historica',
+        'centro cultural',
+        'museo comunitario',
+        'recuperacion comunitaria',
+      ];
+
+      return culturalSignals.some(signal =>
+        combinedText.includes(signal)
+      );
+    }
+
+    const defaultIcon = (place) => {
+      const category = normalizePlaceText(place.category);
+
+      if (isCulturalRegenerationPlace(place)) {
+        const symbol =
+          category.includes('mercado') ? '🏺' :
+          category.includes('memoria') ? '🕯️' :
+          category.includes('arte') ? '🎨' :
+          category.includes('museo') ? '🏛️' :
+          '🏛️';
+
+        return L.divIcon({
+          className: '',
+          html: `
+            <div class="culture-marker-wrap" title="Lugar con potencial de regeneración cultural">
+                            <div class="culture-marker-pin">
+                <span class="culture-marker-symbol">${symbol}</span>
+              </div>
+            </div>
+          `,
+          iconSize: [36, 38],
+          iconAnchor: [18, 36],
+          popupAnchor: [0, -32],
+        });
+      }
+
+      return L.divIcon({
+        className: '',
+        html: `<div style="background:#FFFFFF;border:2px solid #2D6A23;width:26px;height:26px;
+               border-radius:50%;display:flex;align-items:center;justify-content:center;
+               font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,0.3);">${categoryEmoji[category] || '📍'}</div>`,
+        iconSize: [26, 26],
+        iconAnchor: [13, 13],
+      });
+    };
+
+    function popupHTML(p, color) {
+      const isCultural = isCulturalRegenerationPlace(p);
+      const accentColor = isCultural ? '#A87300' : color;
+      const culturalBadge = isCultural
+        ? `<div style="
+            display:inline-flex;
+            align-items:center;
+            gap:5px;
+            margin-bottom:8px;
+            padding:5px 9px;
+            border-radius:999px;
+            background:linear-gradient(135deg,#FFF8D6,#FFE58A);
+            border:1px solid #D5A800;
+            color:#704E00;
+            font-size:11px;
+            font-weight:700;
+          ">Regeneración cultural</div><br>`
+        : '';
+
       const imgSrc = p.image_url || `/api/place-image?name=${encodeURIComponent(p.name)}`;
       const img = `<img src="${imgSrc}" loading="lazy"
         style="width:100%;border-radius:8px;margin-bottom:8px;max-height:130px;object-fit:cover;"
         onerror="this.remove()" alt="${p.name}" />`;
       const dept = p.department ? `<span style="font-size:12px;color:#4A4A4A"> · ${p.department}</span>` : '';
-      const btn = (action, bg, label) => usedActions.includes(action) ? '' :
-        `<button data-action="${action}" style="background:${bg};color:#fff;border:none;border-radius:12px;
-          padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">${label}</button>`;
-      return `${img}<b style="color:${color};font-size:15px">${p.name}</b>${dept}<br>
+      return `${img}${culturalBadge}<b style="color:${accentColor};font-size:15px">${p.name}</b>${dept}<br>
         <span style="font-size:13px;color:#111;line-height:1.5">${p.description || ''}</span>
-        ${extraHTML}
+        <div class="around-slot"></div>
+        <div class="guides-slot"></div>
         <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
-          ${btn('route', '#0F52B1', '🚗 Iniciar ruta')}
-          ${btn('more', '#17B5E8', '📖 Más info')}
-          ${btn('near', '#1A6DE8', '🧭 Cerca de aquí')}
-          ${btn('guides', '#2D6A23', '👤 Guía turístico')}
+          <button onclick="askMore('${(p.name || '').replace(/'/g, "\\'")}')"
+            style="background:#17B5E8;color:#fff;border:none;border-radius:12px;
+            padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">📖 Más info</button>
+          <button onclick="showAround(this, ${p.lat}, ${p.lng})"
+            style="background:#1A6DE8;color:#fff;border:none;border-radius:12px;
+            padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">✨ ¿Qué hay cerca?</button>
+          <button onclick="showGuides(this, ${p.lat}, ${p.lng})"
+            style="background:#2D6A23;color:#fff;border:none;border-radius:12px;
+            padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">👤 Guía turístico</button>
         </div>`;
     }
 
     const POPUP_OPTS = { maxWidth: 360, minWidth: 300 };
 
-    // Estado del popup abierto (lugar, color, paneles ya mostrados)
-    map.on('popupopen', (e) => {
-      const src = e.popup._source || {};
-      state.openPopup = e.popup;
-      state.openPlace = src.placeData || null;
-      state.openColor = src.placeColor || '#2D6A23';
-      state.popupExtras = { near: '', guides: '' };
-      state.popupUsed = [];
-    });
+    const typeLabels = { restaurant: '🍽 Restaurante', business: '🏪 Negocio', hotel: '🏨 Hotel' };
 
-    function rerenderOpenPopup() {
-      if (!state.openPopup || !state.openPlace) return;
-      const extra = (state.popupExtras.near || '') + (state.popupExtras.guides || '');
-      state.openPopup.setContent(
-        popupHTML(state.openPlace, state.openColor, extra, state.popupUsed)
-      );
-    }
+    window.askMore = function (placeName) {
+      map.closePopup();
+      goToChatAndSend(`Cuéntame más sobre ${placeName}: un poco de historia, qué hacer ahí, costos aproximados de entrada si aplica, y un consejo práctico para visitarlo.`);
+    };
 
-    // Distancia en km entre dos puntos (fórmula de Haversine)
-    function distKm(lat1, lng1, lat2, lng2) {
-      const r = Math.PI / 180, R = 6371;
-      const a = Math.sin((lat2 - lat1) * r / 2) ** 2 +
-        Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin((lng2 - lng1) * r / 2) ** 2;
-      return 2 * R * Math.asin(Math.sqrt(a));
-    }
-
-    function nearbyCardsHTML(p) {
-      const nearby = (state.catalog || [])
-        .filter(x => x.name !== p.name)
-        .map(x => ({ ...x, dist: distKm(p.lat, p.lng, x.lat, x.lng) }))
-        .filter(x => x.dist <= 40)
-        .sort((a, b) => a.dist - b.dist)
-        .slice(0, 3);
-
-      if (!nearby.length) {
-        return `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
-          Este es un destino remoto: no hay otros lugares del catálogo a menos de 40 km.</div>`;
-      }
-      return nearby.map(x => `
-        <div style="margin-top:8px;padding:8px;border:1px solid #E7EFFD;background:#F7FAFF;border-radius:10px;">
-          <b style="font-size:13px;color:#1A6DE8">${categoryEmoji[(x.category || '').toLowerCase()] || '📍'} ${x.name}</b>
-          <span style="font-size:12px;color:#4A4A4A"> · a ${x.dist.toFixed(1)} km</span><br>
-          <span style="font-size:12px;color:#111">${x.description || ''}</span><br>
-          <a data-action="fly" data-name="${x.name}"
-            style="display:inline-block;margin-top:4px;color:#1A6DE8;font-size:12px;font-weight:bold;cursor:pointer;">
-            Ver en mapa →</a>
-        </div>`).join('');
-    }
-
-    function guideCardsHTML(results) {
-      if (!results || !results.length) {
-        return `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
-          Aún no hay guías registrados en esta zona.
-          <a href="/guia" style="color:#1A6DE8;font-weight:bold">¿Eres guía? Regístrate →</a></div>`;
-      }
-      return results.map(g => {
-        const tel = (g.telefono || '').replace(/[^+\d]/g, '');
-        return `<div style="margin-top:8px;padding:8px;border:1px solid #E8F2EC;background:#F7FBF5;border-radius:10px;">
-          <b style="font-size:13px;color:#2D6A23">👤 ${g.nombre}</b><br>
-          ${g.descripcion ? `<span style="font-size:12px;color:#111">${g.descripcion}</span><br>` : ''}
-          <span style="font-size:12px;color:#4A4A4A">🗣 ${g.idiomas || 'Español'} · 📍 ${g.departamento}</span><br>
-          <a href="https://wa.me/${tel.replace('+','')}" target="_blank"
-            style="display:inline-block;margin-top:5px;background:#2D6A23;color:#fff;border-radius:10px;
-            padding:4px 10px;font-size:12px;text-decoration:none;">💬 Contactar por WhatsApp</a>
-        </div>`;
-      }).join('');
-    }
-
-    // Un solo manejador para todos los botones dentro de popups
-    document.addEventListener('click', async (e) => {
-      const el = e.target.closest('[data-action]');
-      if (!el || !el.closest('.leaflet-popup')) return;
-      e.preventDefault();
-      e.stopPropagation();
-
-      const action = el.dataset.action;
-      const p = state.openPlace;
-
-      if (action === 'route' && p) {
-        map.closePopup();
-        showView('chat');
-        state.lastPlaces = [p];
-        hideStartButton();
-        startRoute();
-
-      } else if (action === 'more' && p) {
-        map.closePopup();
-        goToChatAndSend(`Cuéntame más sobre ${p.name}: un poco de historia, qué hacer ahí, costos aproximados de entrada si aplica, y un consejo práctico para visitarlo.`);
-
-      } else if (action === 'fly') {
-        const m = state.defaultMarkers?.[el.dataset.name];
-        if (m) {
-          map.closePopup();
-          map.flyTo(m.getLatLng(), 12, { duration: 0.9 });
-          setTimeout(() => m.openPopup(), 950);
+    window.showAround = async function (btn, lat, lng) {
+      const popup = btn.closest('.leaflet-popup-content') || btn.parentElement.parentElement;
+      const slot = popup.querySelector('.around-slot');
+      btn.textContent = 'Buscando...';
+      btn.disabled = true;
+      try {
+        const res = await fetch(`/api/around?lat=${lat}&lng=${lng}`);
+        const data = await res.json();
+        if (!data.results || !data.results.length) {
+          slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
+            Aún no hay negocios registrados cerca de este punto.</div>`;
+        } else {
+          slot.innerHTML = data.results.map(r => {
+            const extra = [
+              typeLabels[r.type] || '📍',
+              r.price_range ? `💰 ${r.price_range}` : '',
+              r.distance_km != null ? `a ${Number(r.distance_km).toFixed(1)} km` : '',
+            ].filter(Boolean).join(' · ');
+            return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #EEE;">
+              <b style="font-size:13px;color:#111">${r.name}</b><br>
+              <span style="font-size:12px;color:#4A4A4A">${extra}</span>
+              ${r.description ? `<br><span style="font-size:12px;color:#111">${r.description}</span>` : ''}
+            </div>`;
+          }).join('');
         }
-
-      } else if (action === 'near' && p) {
-        state.popupExtras.near = nearbyCardsHTML(p);
-        state.popupUsed.push('near');
-        rerenderOpenPopup();
-
-      } else if (action === 'guides' && p) {
-        el.textContent = 'Buscando guías...';
-        let html;
-        try {
-          const res = await fetch(`/api/guides?lat=${p.lat}&lng=${p.lng}`);
-          const data = await res.json();
-          html = guideCardsHTML(data.results);
-        } catch (err) {
-          html = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
-            No pude buscar guías en este momento.</div>`;
-        }
-        state.popupExtras.guides = html;
-        state.popupUsed.push('guides');
-        rerenderOpenPopup();
+      } catch (e) {
+        slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
+          No pude consultar los alrededores ahora.</div>`;
       }
-    });
+      btn.remove();
+    };
+
+    window.showGuides = async function (btn, lat, lng) {
+      const popup = btn.closest('.leaflet-popup-content') || btn.parentElement.parentElement;
+      const slot = popup.querySelector('.guides-slot');
+      btn.textContent = 'Buscando guías...';
+      btn.disabled = true;
+      try {
+        const res = await fetch(`/api/guides?lat=${lat}&lng=${lng}`);
+        const data = await res.json();
+        if (!data.results || !data.results.length) {
+          slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
+            Aún no hay guías registrados en esta zona. 
+            <a href="/guia" style="color:#1A6DE8;font-weight:bold">¿Eres guía? Regístrate →</a></div>`;
+        } else {
+          slot.innerHTML = data.results.map(g => {
+            const tel = (g.telefono || '').replace(/[^+\d]/g, '');
+            return `<div style="margin-top:8px;padding:8px;border:1px solid #E8F2EC;background:#F7FBF5;border-radius:10px;">
+              <b style="font-size:13px;color:#2D6A23">👤 ${g.nombre}</b><br>
+              ${g.descripcion ? `<span style="font-size:12px;color:#111">${g.descripcion}</span><br>` : ''}
+              <span style="font-size:12px;color:#4A4A4A">🗣 ${g.idiomas || 'Español'} · 📍 ${g.departamento}</span><br>
+              <a href="https://wa.me/${tel.replace('+','')}" target="_blank"
+                style="display:inline-block;margin-top:5px;background:#2D6A23;color:#fff;border-radius:10px;
+                padding:4px 10px;font-size:12px;text-decoration:none;">💬 Contactar por WhatsApp</a>
+            </div>`;
+          }).join('');
+        }
+      } catch (e) {
+        slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
+          No pude buscar guías en este momento.</div>`;
+      }
+      btn.remove();
+    };
 
     async function loadDefaultPlaces() {
       try {
         const res = await fetch('/api/places');
         const data = await res.json();
-        state.catalog = data.places;
-        state.defaultMarkers = {};
         data.places.forEach(p => {
-          const m = L.marker([p.lat, p.lng], { icon: defaultIcon(p.category) })
+          L.marker([p.lat, p.lng], {
+            icon: defaultIcon(p),
+            zIndexOffset: isCulturalRegenerationPlace(p) ? 1000 : 0,
+            riseOnHover: true,
+          })
             .addTo(map)
             .bindPopup(popupHTML(p, '#2D6A23'), POPUP_OPTS);
-          m.placeData = p;
-          m.placeColor = '#2D6A23';
-          state.defaultMarkers[p.name] = m;
         });
       } catch (e) { console.error('No se pudo cargar el catálogo', e); }
     }
@@ -438,8 +687,6 @@
           const marker = L.marker([p.lat, p.lng], { icon: pinIcon(i + 1) })
             .addTo(map)
             .bindPopup(popupHTML(p, '#1A6DE8'), POPUP_OPTS);
-          marker.placeData = p;
-          marker.placeColor = '#1A6DE8';
           state.markers.push(marker);
           coords.push([p.lat, p.lng]);
 
@@ -449,35 +696,6 @@
           }
         }, i * 500);
       });
-    }
-
-    // ===== Enlace a Google Maps para navegar de verdad =====
-    function gmapsUrl(origin, places) {
-      const dest = places[places.length - 1];
-      const params = new URLSearchParams({
-        api: '1',
-        destination: `${dest.lat},${dest.lng}`,
-        travelmode: 'driving',
-      });
-      if (origin) params.set('origin', `${origin[0]},${origin[1]}`);
-      const mids = places.slice(0, -1).map(p => `${p.lat},${p.lng}`).join('|');
-      if (mids) params.set('waypoints', mids);
-      return `https://www.google.com/maps/dir/?${params.toString()}`;
-    }
-
-    function gmapsButtonHTML(origin, places) {
-      return `<a href="${gmapsUrl(origin, places)}" target="_blank" rel="noopener"
-        style="display:inline-flex;align-items:center;gap:6px;background:#1A6DE8;color:#fff;
-        border-radius:12px;padding:8px 14px;font-size:13px;font-weight:bold;text-decoration:none;">
-        🗺 Abrir en Google Maps</a>`;
-    }
-
-    function addHTMLBubble(html) {
-      const div = document.createElement('div');
-      div.className = 'mr-auto max-w-[90%] bg-real-soft border border-real/40 text-tinta rounded-xl rounded-bl-sm px-4 py-2.5 text-sm leading-relaxed';
-      div.innerHTML = html;
-      chatEl.appendChild(div);
-      chatEl.scrollTop = chatEl.scrollHeight;
     }
 
     // ===== Botón "Empezar ruta" (estilo Google Maps) =====
@@ -495,23 +713,17 @@
 
     async function startRoute() {
       const btn = document.getElementById('start-nav');
-      if (btn) { btn.textContent = 'Calculando ruta...'; btn.disabled = true; }
+      btn.textContent = 'Calculando ruta...';
+      btn.disabled = true;
 
-      // Waypoints: ubicación actual (si existe) + paradas en orden
       const waypoints = [];
       if (state.userLocation) waypoints.push(state.userLocation);
       state.lastPlaces.forEach(p => waypoints.push([p.lat, p.lng]));
 
       if (waypoints.length < 2) {
-        if (btn) { btn.textContent = '▶ Empezar ruta'; btn.disabled = false; }
-        // Sin ubicación no podemos trazar en la app, pero Google Maps sí
-        // puede navegar usando la ubicación del teléfono directamente:
-        if (state.lastPlaces.length) {
-          addBubble('No tengo tu ubicación para trazar la ruta aquí, pero puedes navegar directo con Google Maps:', 'ai');
-          addHTMLBubble(gmapsButtonHTML(null, state.lastPlaces));
-        } else {
-          addBubble('Necesito al menos dos puntos para trazar la ruta. Activa tu ubicación o pide más paradas.', 'ai');
-        }
+        btn.textContent = '▶ Empezar ruta';
+        btn.disabled = false;
+        addBubble('Necesito al menos dos puntos para trazar la ruta. Activa tu ubicación o pide más paradas.', 'ai');
         return;
       }
 
@@ -538,13 +750,11 @@
           }).addTo(map);
         }
 
-        // Para navegar de verdad: abrir la misma ruta en Google Maps
-        addHTMLBubble(gmapsButtonHTML(state.userLocation, state.lastPlaces));
-
         map.flyToBounds(state.routeLine.getBounds(), { padding: [60, 60], duration: 1 });
         hideStartButton();
       } catch (e) {
-        if (btn) { btn.textContent = '▶ Empezar ruta'; btn.disabled = false; }
+        btn.textContent = '▶ Empezar ruta';
+        btn.disabled = false;
         addBubble('No pude calcular la ruta por carretera. Intenta de nuevo.', 'ai');
       }
     }
@@ -582,7 +792,27 @@
     const removeTyping = () => document.getElementById('typing')?.remove();
 
     // ================== BARRA DE CONTEXTO ==================
-    const moodEmoji = { 'Playa': '🏖', 'Montaña': '⛰', 'Ciudad': '🏙', 'Mochilero': '🎒', 'Intermedio': '💵', 'Premium': '💎', 'Tranquilidad': '🌙', 'Fiesta': '🎉', 'Adrenalina': '⚡' };
+    const moodEmoji = {
+      'Playa': '🏖',
+      'Montaña': '⛰',
+      'Ciudad': '🏙',
+      'Cultura': '🏛',
+      'Naturaleza': '🌿',
+      'Mochilero': '🎒',
+      'Intermedio': '💵',
+      'Premium': '💎',
+      'Tranquilidad': '🌙',
+      'Fiesta': '🎉',
+      'Adrenalina': '⚡',
+      'Hasta 30 minutos': '🕒',
+      'Hasta 1 hora': '🚗',
+      'Hasta 2 horas': '🛣',
+      'Sin límite de distancia': '🗺',
+      'Solo': '🚶',
+      'Pareja': '❤️',
+      'Familia': '👨‍👩‍👧',
+      'Amigos': '👥',
+    };
 
     function renderContextBar() {
       const bar = document.getElementById('context-bar');
@@ -665,14 +895,37 @@
 
         renderContextBar();
 
-        const ready = Object.values(state.moods).every(Boolean);
+        const selectedCount = Object.values(state.moods).filter(Boolean).length;
+        const totalRequired = Object.keys(state.moods).length;
+        const ready = selectedCount === totalRequired;
+
         document.getElementById('start-route').disabled = !ready;
+
+        const progress = document.getElementById('mood-progress');
+        if (progress) {
+          progress.textContent = ready
+            ? '¡Todo listo! Ya puedes armar tu ruta.'
+            : `Has seleccionado ${selectedCount} de ${totalRequired} opciones.`;
+        }
       });
     });
 
     document.getElementById('start-route').addEventListener('click', () => {
-      const { vibe, budget, energy } = state.moods;
-      const msg = `Quiero un plan de ${vibe.toLowerCase()}, presupuesto ${budget.toLowerCase()}, con vibra de ${energy.toLowerCase()}. Ármame una ruta.`;
+      const {
+        destination,
+        budget,
+        energy,
+        travelTime,
+        company,
+      } = state.moods;
+
+      const msg =
+        `Quiero una ruta de ${destination.toLowerCase()}, ` +
+        `con presupuesto ${budget.toLowerCase()}, ` +
+        `ambiente de ${energy.toLowerCase()} y viajando con ${company.toLowerCase()}. ` +
+        `El tiempo máximo de traslado que acepto entre mi ubicación, las paradas y los siguientes destinos es: ${travelTime.toLowerCase()}. ` +
+        `Organiza una ruta lógica, prioriza lugares compatibles con ese tiempo de viaje y evita trayectos demasiado largos.`;
+
       goToChatAndSend(msg);
     });
 
@@ -686,10 +939,22 @@
       state.lastPlaces = [];
       map.flyTo(state.userLocation || [13.7, -89.2], state.userLocation ? 11 : 9, { duration: 0.8 });
       // Limpiar moods y su selección visual
-      state.moods = { vibe: null, budget: null, energy: null };
+      state.moods = {
+        destination: null,
+        budget: null,
+        energy: null,
+        travelTime: null,
+        company: null,
+      };
       document.querySelectorAll('.mood-btn').forEach(b =>
         b.classList.remove('border-bosque', 'ring-2', 'ring-bosque/40', 'font-bold'));
       document.getElementById('start-route').disabled = true;
+
+      const progress = document.getElementById('mood-progress');
+      if (progress) {
+        progress.textContent = 'Selecciona una opción en las 5 secciones.';
+      }
+
       renderContextBar();
       // Volver a la pantalla de inicio
       showView('home');
