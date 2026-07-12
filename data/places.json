@@ -1,0 +1,164 @@
+{
+  "places": [
+    {
+      "name": "Playa El Tunco",
+      "lat": 13.4936,
+      "lng": -89.3811,
+      "category": "playa",
+      "tags": ["surf", "mochilero", "adrenalina", "vida nocturna"],
+      "description": "El pueblo surfero más famoso del país: olas, hostales económicos y atardeceres icónicos."
+    },
+    {
+      "name": "Playa El Zonte",
+      "lat": 13.4958,
+      "lng": -89.4408,
+      "category": "playa",
+      "tags": ["surf", "mochilero", "tranquilidad", "bitcoin beach"],
+      "description": "Cuna de Bitcoin Beach, olas de clase mundial y ambiente más relajado que El Tunco."
+    },
+    {
+      "name": "Playa El Cuco",
+      "lat": 13.1758,
+      "lng": -88.1075,
+      "category": "playa",
+      "tags": ["tranquilidad", "premium", "oriente"],
+      "description": "Playa extensa de arena oscura en el oriente, cerca de resorts como Las Flores."
+    },
+    {
+      "name": "Playa Costa del Sol",
+      "lat": 13.3339,
+      "lng": -88.9358,
+      "category": "playa",
+      "tags": ["familiar", "premium", "tranquilidad"],
+      "description": "La franja costera más larga del país, ideal para descanso familiar y hoteles frente al mar."
+    },
+    {
+      "name": "Volcán de Santa Ana (Ilamatepec)",
+      "lat": 13.8536,
+      "lng": -89.6297,
+      "category": "montaña",
+      "tags": ["senderismo", "adrenalina", "mochilero", "naturaleza"],
+      "description": "El volcán más alto del país; su cráter guarda una laguna turquesa impresionante."
+    },
+    {
+      "name": "Cerro Verde",
+      "lat": 13.8267,
+      "lng": -89.6233,
+      "category": "montaña",
+      "tags": ["naturaleza", "tranquilidad", "familiar"],
+      "description": "Parque nacional con senderos entre bosque nebuloso y vistas a los volcanes Izalco y Santa Ana."
+    },
+    {
+      "name": "El Boquerón",
+      "lat": 13.7344,
+      "lng": -89.2867,
+      "category": "montaña",
+      "tags": ["naturaleza", "tranquilidad", "cerca de la capital"],
+      "description": "Cráter del volcán de San Salvador a solo 30 minutos de la capital, clima fresco y miradores."
+    },
+    {
+      "name": "Lago de Coatepeque",
+      "lat": 13.8667,
+      "lng": -89.55,
+      "category": "naturaleza",
+      "tags": ["lago", "premium", "tranquilidad", "deportes acuáticos"],
+      "description": "Lago de cráter azul turquesa, restaurantes sobre el agua y deportes acuáticos."
+    },
+    {
+      "name": "Suchitoto",
+      "lat": 13.9381,
+      "lng": -89.0278,
+      "category": "pueblo",
+      "tags": ["cultura", "colonial", "tranquilidad", "arte"],
+      "description": "Pueblo colonial de calles empedradas, arte, y vista al lago Suchitlán."
+    },
+    {
+      "name": "Juayúa",
+      "lat": 13.8411,
+      "lng": -89.7458,
+      "category": "pueblo",
+      "tags": ["gastronomía", "ruta de las flores", "mochilero", "festival"],
+      "description": "Corazón de la Ruta de las Flores, famoso por su festival gastronómico de fin de semana."
+    },
+    {
+      "name": "Concepción de Ataco",
+      "lat": 13.8703,
+      "lng": -89.85,
+      "category": "pueblo",
+      "tags": ["ruta de las flores", "murales", "café", "tranquilidad"],
+      "description": "Pueblo de murales coloridos, café de altura y clima fresco en la Ruta de las Flores."
+    },
+    {
+      "name": "Apaneca",
+      "lat": 13.8592,
+      "lng": -89.8025,
+      "category": "pueblo",
+      "tags": ["ruta de las flores", "adrenalina", "café", "canopy"],
+      "description": "Famoso por sus fincas de café, laberinto de Albania y tours de canopy y buggies."
+    },
+    {
+      "name": "Nahuizalco",
+      "lat": 13.7775,
+      "lng": -89.7364,
+      "category": "pueblo",
+      "tags": ["artesanías", "cultura", "ruta de las flores", "mercado nocturno"],
+      "description": "Pueblo artesanal de raíces indígenas, famoso por su mimbre y su mercado nocturno."
+    },
+    {
+      "name": "Centro Histórico de San Salvador",
+      "lat": 13.6975,
+      "lng": -89.1908,
+      "category": "cultura",
+      "tags": ["historia", "arquitectura", "mochilero", "urbano"],
+      "description": "Palacio Nacional, Teatro Nacional, Catedral e Iglesia El Rosario: el renacer del centro capitalino."
+    },
+    {
+      "name": "Iglesia El Rosario",
+      "lat": 13.6961,
+      "lng": -89.1878,
+      "category": "cultura",
+      "tags": ["arquitectura", "historia", "arte"],
+      "description": "Por fuera parece un hangar; por dentro, un arcoíris de luz. Joya arquitectónica latinoamericana."
+    },
+    {
+      "name": "Joya de Cerén",
+      "lat": 13.8272,
+      "lng": -89.3661,
+      "category": "cultura",
+      "tags": ["arqueología", "historia", "unesco"],
+      "description": "La 'Pompeya de América': aldea maya sepultada por ceniza, Patrimonio de la Humanidad UNESCO."
+    },
+    {
+      "name": "Ruinas de Tazumal",
+      "lat": 13.9789,
+      "lng": -89.6742,
+      "category": "cultura",
+      "tags": ["arqueología", "historia", "maya"],
+      "description": "El sitio maya más importante del país, con su pirámide principal en Chalchuapa."
+    },
+    {
+      "name": "Catedral de Santa Ana",
+      "lat": 13.9942,
+      "lng": -89.5598,
+      "category": "cultura",
+      "tags": ["arquitectura", "historia", "neogótico"],
+      "description": "Catedral neogótica única en la región, corazón de la segunda ciudad del país."
+    },
+    {
+      "name": "Parque Nacional El Imposible",
+      "lat": 13.8442,
+      "lng": -89.9481,
+      "category": "naturaleza",
+      "tags": ["senderismo", "adrenalina", "biodiversidad", "mochilero"],
+      "description": "La reserva natural más grande del país: bosque tropical, ríos y biodiversidad única."
+    },
+    {
+      "name": "Bahía de Jiquilisco",
+      "lat": 13.2278,
+      "lng": -88.5583,
+      "category": "naturaleza",
+      "tags": ["manglares", "tranquilidad", "kayak", "tortugas"],
+      "description": "Reserva de biosfera con manglares, islas y anidación de tortugas marinas; ideal para kayak."
+    }
+  ]
+}

@@ -108,6 +108,8 @@
       history: [],       // historial para la IA [{role, content}]
       markers: [],
       routeLine: null,
+      userLocation: null,
+      lastPlaces: [],
     };
 
     // ================== MAPA ==================
@@ -117,6 +119,54 @@
       attribution: '&copy; OpenStreetMap &copy; CARTO',
       maxZoom: 19,
     }).addTo(map);
+
+    // ===== Sitios por defecto (catálogo) =====
+    const categoryEmoji = { playa: '🏖', 'montaña': '⛰', pueblo: '🏘', cultura: '🏛', naturaleza: '🌿' };
+
+    const defaultIcon = (category) => L.divIcon({
+      className: '',
+      html: `<div style="background:#FFFFFF;border:2px solid #2D6A23;width:26px;height:26px;
+             border-radius:50%;display:flex;align-items:center;justify-content:center;
+             font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,0.3);">${categoryEmoji[category] || '📍'}</div>`,
+      iconSize: [26, 26],
+      iconAnchor: [13, 13],
+    });
+
+    async function loadDefaultPlaces() {
+      try {
+        const res = await fetch('/api/places');
+        const data = await res.json();
+        data.places.forEach(p => {
+          L.marker([p.lat, p.lng], { icon: defaultIcon(p.category) })
+            .addTo(map)
+            .bindPopup(`<b style="color:#2D6A23">${p.name}</b><br><span style="font-size:12px;color:#111">${p.description}</span>`);
+        });
+      } catch (e) { console.error('No se pudo cargar el catálogo', e); }
+    }
+    loadDefaultPlaces();
+
+    // ===== Ubicación actual del usuario =====
+    const userIcon = L.divIcon({
+      className: '',
+      html: `<div style="width:18px;height:18px;background:#17B5E8;border:3px solid #FFFFFF;
+             border-radius:50%;box-shadow:0 0 0 4px rgba(23,181,232,0.3);"></div>`,
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
+    });
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          state.userLocation = [pos.coords.latitude, pos.coords.longitude];
+          L.marker(state.userLocation, { icon: userIcon })
+            .addTo(map)
+            .bindPopup('<b style="color:#17B5E8">Estás aquí</b>');
+          map.setView(state.userLocation, 11);
+        },
+        () => { console.warn('Usuario no compartió su ubicación'); },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    }
 
     const pinIcon = (num) => L.divIcon({
       className: '',
@@ -131,15 +181,17 @@
       state.markers.forEach(m => map.removeLayer(m));
       state.markers = [];
       if (state.routeLine) { map.removeLayer(state.routeLine); state.routeLine = null; }
+      document.getElementById('start-nav')?.remove();
     }
 
     function drawPlaces(places) {
       if (!places || !places.length) return;
       clearMap();
+      state.lastPlaces = places;
 
       const coords = [];
       places.forEach((p, i) => {
-        // Dibuja cada marcador con un pequeño delay (ruta "viva")
+        // Dibuja cada marcador con un pequeño delay (aparición "viva")
         setTimeout(() => {
           const marker = L.marker([p.lat, p.lng], { icon: pinIcon(i + 1) })
             .addTo(map)
@@ -147,17 +199,76 @@
           state.markers.push(marker);
           coords.push([p.lat, p.lng]);
 
-          if (coords.length > 1) {
-            if (state.routeLine) map.removeLayer(state.routeLine);
-            state.routeLine = L.polyline(coords, {
-              color: '#2D6A23', weight: 3, dashArray: '8 8', opacity: 0.9,
-            }).addTo(map);
-          }
           if (i === places.length - 1) {
             map.flyToBounds(L.latLngBounds(coords), { padding: [60, 60], duration: 1.2 });
+            showStartButton();   // La ruta NO se traza: aparece el botón "Empezar"
           }
         }, i * 500);
       });
+    }
+
+    // ===== Botón "Empezar ruta" (estilo Google Maps) =====
+    function showStartButton() {
+      if (document.getElementById('start-nav')) return;
+      const btn = document.createElement('button');
+      btn.id = 'start-nav';
+      btn.textContent = '▶ Empezar ruta';
+      btn.className = 'absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] bg-real text-white ' +
+        'font-bold text-sm px-6 py-3 rounded-full shadow-lg hover:bg-real-dark transition';
+      btn.addEventListener('click', startRoute);
+      document.querySelector('section').appendChild(btn);
+    }
+    const hideStartButton = () => document.getElementById('start-nav')?.remove();
+
+    async function startRoute() {
+      const btn = document.getElementById('start-nav');
+      btn.textContent = 'Calculando ruta...';
+      btn.disabled = true;
+
+      // Waypoints: ubicación actual (si existe) + paradas en orden
+      const waypoints = [];
+      if (state.userLocation) waypoints.push(state.userLocation);
+      state.lastPlaces.forEach(p => waypoints.push([p.lat, p.lng]));
+
+      if (waypoints.length < 2) {
+        btn.textContent = '▶ Empezar ruta';
+        btn.disabled = false;
+        addBubble('Necesito al menos dos puntos para trazar la ruta. Activa tu ubicación o pide más paradas.', 'ai');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/route', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ waypoints }),
+        });
+        const data = await res.json();
+
+        if (state.routeLine) map.removeLayer(state.routeLine);
+
+        if (data.geometry && data.geometry.length) {
+          // Ruta real por carretera devuelta por la API
+          state.routeLine = L.polyline(data.geometry, {
+            color: '#1A6DE8', weight: 4, opacity: 0.9,
+          }).addTo(map);
+          if (data.distance_km) {
+            addBubble(`🚗 Ruta lista: ${data.distance_km} km · aprox. ${data.duration_min} min en carro.`, 'ai');
+          }
+        } else {
+          // Respaldo: línea recta punteada si la API no respondió
+          state.routeLine = L.polyline(waypoints, {
+            color: '#1A6DE8', weight: 3, dashArray: '8 8', opacity: 0.8,
+          }).addTo(map);
+        }
+
+        map.flyToBounds(state.routeLine.getBounds(), { padding: [60, 60], duration: 1 });
+        hideStartButton();
+      } catch (e) {
+        btn.textContent = '▶ Empezar ruta';
+        btn.disabled = false;
+        addBubble('No pude calcular la ruta por carretera. Intenta de nuevo.', 'ai');
+      }
     }
 
     // ================== CHAT UI ==================
