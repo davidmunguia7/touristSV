@@ -389,9 +389,12 @@
         "cultura",
         "colonial",
         "tranquilidad",
-        "arte"
+        "arte",
+        "galerias",
+        "festival",
+        "patrimonio"
       ],
-      "description": "Pueblo colonial de calles empedradas, arte, y vista al lago Suchitlán.",
+      "description": "Pueblo referente del turismo cultural salvadoreño con galerías, festivales y patrimonio histórico.",
       "department": "Cuscatlán"
     },
     {
@@ -403,9 +406,10 @@
         "gastronomía",
         "ruta de las flores",
         "mochilero",
-        "festival"
+        "festival",
+        "arte"
       ],
-      "description": "Corazón de la Ruta de las Flores, famoso por su festival gastronómico de fin de semana.",
+      "description": "Destino gastronómico con potencial para ampliar festivales culturales y mercados de arte.",
       "department": "Sonsonate"
     },
     {
@@ -417,9 +421,11 @@
         "ruta de las flores",
         "murales",
         "café",
-        "tranquilidad"
+        "tranquilidad",
+        "arte",
+        "cafeterias"
       ],
-      "description": "Pueblo de murales coloridos, café de altura y clima fresco en la Ruta de las Flores.",
+      "description": "Pueblo conocido por sus murales y actividad artística, ideal para fortalecer el turismo creativo.",
       "department": "Ahuachapán"
     },
     {
@@ -431,9 +437,11 @@
         "ruta de las flores",
         "adrenalina",
         "café",
-        "canopy"
+        "canopy",
+        "arte",
+        "patrimonio"
       ],
-      "description": "Famoso por sus fincas de café, laberinto de Albania y tours de canopy y buggies.",
+      "description": "Pueblo de montaña con beneficios de café y potencial para rutas de patrimonio industrial.",
       "department": "Ahuachapán"
     },
     {
@@ -655,6 +663,251 @@
       ],
       "description": "Centro comercial al aire libre con restaurantes, cines y ambiente seguro para pasear de noche.",
       "department": "La Libertad"
+    },
+    {
+      "name": "Estación Ferroviaria FENADESAL",
+      "lat": 13.6978,
+      "lng": -89.1889,
+      "category": "patrimonio",
+      "tags": [
+        "regeneracion cultural",
+        "ferrocarril",
+        "historia",
+        "museo"
+      ],
+      "description": "Antigua estación ferroviaria nacional con potencial para ampliar espacios culturales, museos y eventos patrimoniales.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Museo del Ferrocarril de Sonsonate",
+      "lat": 13.7204,
+      "lng": -89.7213,
+      "category": "patrimonio",
+      "tags": [
+        "ferrocarril",
+        "historia",
+        "museo",
+        "regeneracion cultural"
+      ],
+      "description": "Antigua estación ferroviaria convertida en museo, con potencial para fortalecer un distrito cultural y turístico.",
+      "department": "Sonsonate"
+    },
+    {
+      "name": "Estación Ferroviaria de Quezaltepeque",
+      "lat": 13.8314,
+      "lng": -89.2747,
+      "category": "patrimonio",
+      "tags": [
+        "ferrocarril",
+        "historia",
+        "museo",
+        "regeneracion cultural"
+      ],
+      "description": "Estación ferroviaria histórica restaurada con oportunidades para ampliar actividades culturales y comunitarias.",
+      "department": "La Libertad"
+    },
+    {
+      "name": "Mercado Ex-Cuartel",
+      "lat": 13.6987,
+      "lng": -89.1898,
+      "category": "mercado historico",
+      "tags": [
+        "gastronomia",
+        "artesanias",
+        "regeneracion cultural"
+      ],
+      "description": "Mercado tradicional ideal para fortalecer ferias gastronómicas, arte local y actividades culturales.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Mercado Central de San Salvador",
+      "lat": 13.6971,
+      "lng": -89.1893,
+      "category": "mercado historico",
+      "tags": [
+        "gastronomia",
+        "tradicion",
+        "cultura"
+      ],
+      "description": "Centro histórico comercial con gran potencial para rutas gastronómicas y turismo cultural.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Mercado Hula Hula",
+      "lat": 13.6986,
+      "lng": -89.1922,
+      "category": "mercado historico",
+      "tags": [
+        "gastronomia",
+        "mercado",
+        "cultura"
+      ],
+      "description": "Mercado emblemático del Centro Histórico con potencial para festivales gastronómicos y actividades artísticas.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Mercado Sagrado Corazón",
+      "lat": 13.7032,
+      "lng": -89.1911,
+      "category": "mercado historico",
+      "tags": [
+        "tradicion",
+        "mercado",
+        "arte"
+      ],
+      "description": "Mercado tradicional ideal para impulsar eventos culturales y emprendimientos creativos.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Parque Cuscatlán",
+      "lat": 13.6915,
+      "lng": -89.2074,
+      "category": "espacio publico",
+      "tags": [
+        "arte",
+        "cultura",
+        "parque"
+      ],
+      "description": "Gran parque urbano con capacidad para ampliar actividades artísticas, museográficas y festivales.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Centro Histórico de Santa Ana",
+      "lat": 13.9949,
+      "lng": -89.5597,
+      "category": "centro historico",
+      "tags": [
+        "patrimonio",
+        "arquitectura",
+        "regeneracion cultural"
+      ],
+      "description": "Conjunto patrimonial con alto potencial para corredores culturales, galerías y festivales urbanos.",
+      "department": "Santa Ana"
+    },
+    {
+      "name": "Centro Histórico de Ahuachapán",
+      "lat": 13.9216,
+      "lng": -89.845,
+      "category": "centro historico",
+      "tags": [
+        "patrimonio",
+        "arte",
+        "cultura"
+      ],
+      "description": "Centro histórico con arquitectura tradicional ideal para proyectos culturales y turísticos.",
+      "department": "Ahuachapán"
+    },
+    {
+      "name": "Centro Histórico de San Vicente",
+      "lat": 13.6403,
+      "lng": -88.7854,
+      "category": "centro historico",
+      "tags": [
+        "patrimonio",
+        "historia",
+        "cultura"
+      ],
+      "description": "Área histórica con potencial para museos comunitarios y rutas patrimoniales.",
+      "department": "San Vicente"
+    },
+    {
+      "name": "Centro Histórico de Chalchuapa",
+      "lat": 13.9866,
+      "lng": -89.681,
+      "category": "centro historico",
+      "tags": [
+        "arqueologia",
+        "patrimonio",
+        "cultura"
+      ],
+      "description": "Ciudad histórica cercana a Tazumal con oportunidades para fortalecer el turismo cultural.",
+      "department": "Santa Ana"
+    },
+    {
+      "name": "Barrio San Jacinto",
+      "lat": 13.6815,
+      "lng": -89.1834,
+      "category": "barrio historico",
+      "tags": [
+        "murales",
+        "arte urbano",
+        "comunidad"
+      ],
+      "description": "Barrio tradicional con potencial para circuitos de arte urbano y recuperación del espacio público.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Colonia Zacamil",
+      "lat": 13.7276,
+      "lng": -89.2174,
+      "category": "arte urbano",
+      "tags": [
+        "murales",
+        "arte comunitario",
+        "regeneracion"
+      ],
+      "description": "Sector reconocido por iniciativas de murales y recuperación comunitaria mediante el arte.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Antigua Estación de Ferrocarriles de Ahuachapán",
+      "lat": 13.92682,
+      "lng": -89.85094,
+      "category": "patrimonio",
+      "tags": [
+        "regeneracion cultural",
+        "ferrocarril",
+        "patrimonio industrial",
+        "museo comunitario",
+        "arte"
+      ],
+      "description": "Antigua estación ferroviaria con potencial para convertirse en museo comunitario, galería, mercado creativo y espacio para actividades culturales.",
+      "department": "Ahuachapán"
+    },
+    {
+      "name": "Teatro Nacional Francisco Gavidia",
+      "lat": 13.482297,
+      "lng": -88.174069,
+      "category": "patrimonio",
+      "tags": [
+        "regeneracion cultural",
+        "teatro",
+        "artes escenicas",
+        "arquitectura",
+        "historia"
+      ],
+      "description": "Teatro histórico de San Miguel que puede fortalecer la regeneración del centro urbano mediante programación artística, formación cultural y festivales.",
+      "department": "San Miguel"
+    },
+    {
+      "name": "Casa Barrientos",
+      "lat": 13.74731,
+      "lng": -89.67549,
+      "category": "patrimonio",
+      "tags": [
+        "regeneracion cultural",
+        "centro artistico",
+        "arquitectura",
+        "memoria local",
+        "talleres"
+      ],
+      "description": "Casa histórica de Izalco recuperada como espacio cultural, adecuada para talleres, exposiciones, memoria comunitaria y actividades de identidad local.",
+      "department": "Sonsonate"
+    },
+    {
+      "name": "Museo de la Revolución Salvadoreña",
+      "lat": 13.95859,
+      "lng": -88.16349,
+      "category": "memoria historica",
+      "tags": [
+        "regeneracion cultural",
+        "memoria",
+        "museo",
+        "historia",
+        "educacion"
+      ],
+      "description": "Museo de Perquín dedicado a la memoria del conflicto armado, con potencial para ampliar rutas educativas, archivos comunitarios y actividades culturales.",
+      "department": "Morazán"
     }
   ]
 }
