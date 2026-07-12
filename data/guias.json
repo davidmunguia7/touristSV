@@ -1,0 +1,28 @@
+{
+  "guias": [
+    {
+      "nombre": "Carlos Ramírez",
+      "telefono": "+503 7000-0001",
+      "correo": "carlos.guia@example.com",
+      "idiomas": "Español, Inglés",
+      "descripcion": "Guía certificado de surf y tours por la Costa del Bálsamo. 8 años de experiencia.",
+      "departamento": "La Libertad"
+    },
+    {
+      "nombre": "María Fernanda López",
+      "telefono": "+503 7000-0002",
+      "correo": "mafe.tours@example.com",
+      "idiomas": "Español, Inglés, Francés",
+      "descripcion": "Especialista en la Ruta de las Flores: café, gastronomía y cultura local.",
+      "departamento": "Sonsonate"
+    },
+    {
+      "nombre": "José Antonio Hernández",
+      "telefono": "+503 7000-0003",
+      "correo": "tono.trekking@example.com",
+      "idiomas": "Español",
+      "descripcion": "Trekking y camping en volcanes: Santa Ana, Izalco y Cerro Verde.",
+      "departamento": "Santa Ana"
+    }
+  ]
+}

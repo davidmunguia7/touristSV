@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ohtli AI</title>
+  <title>Ohtli AI — Tu guía inteligente de El Salvador</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -18,7 +18,7 @@
             real:     { DEFAULT: '#1A6DE8', dark: '#1558BC', soft: '#E7EFFD' },
             tinta:    { DEFAULT: '#111111', suave: '#4A4A4A' },
           },
-          fontFamily: { mono: ['"JetBrains Mono"', 'monospace'] },
+          fontFamily: { mono: ['"JetBrains Mono"', 'monospace'], sans: ['Manrope', 'sans-serif'] },
         },
       },
     };
@@ -28,7 +28,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet" />
 
   <style>
     ::-webkit-scrollbar { width: 6px; }
@@ -57,34 +57,50 @@
     <!-- ============ PANEL IZQUIERDO ============ -->
     <aside id="left-panel" class="w-[42%] min-w-[380px] flex flex-col border-r border-arena bg-white relative">
 
-      <!-- ===== VISTA 1: HOME (pregunta grande + chips) ===== -->
-      <div id="home-view" class="flex-1 flex flex-col items-center justify-center px-8 fade-in">
-        <p class="text-bosque text-3xl tracking-widest font-bold mb-3">Ohtli AI</p>
-        <br>
-        <h1 class="text-4xl font-bold text-tinta text-center leading-snug mb-8">
-          ¿A dónde vamos hoy?
-        </h1>
+      <!-- ===== VISTA 1: HOME (bienvenida Ohtli AI) ===== -->
+      <div id="home-view" class="flex-1 flex flex-col items-center justify-center px-8 fade-in relative overflow-hidden">
+        <!-- Acentos de color de fondo -->
+        <div class="pointer-events-none absolute -left-20 -top-20 h-56 w-56 rounded-full bg-lima-soft blur-3xl"></div>
+        <div class="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-real-soft blur-3xl"></div>
 
-        <form id="home-form" class="w-full max-w-md flex gap-2 mb-5">
-          <input id="home-input" type="text" placeholder="Pregúntale a tu guía..."
-            class="flex-1 bg-white border border-arena rounded-full px-5 py-3 text-sm text-tinta placeholder-tinta-suave/60 focus:outline-none focus:border-real shadow-sm" />
-          <button type="submit" aria-label="Enviar"
-            class="w-12 h-12 rounded-full bg-real text-white font-bold hover:bg-real-dark transition flex-shrink-0">➤</button>
-        </form>
+        <div class="relative flex flex-col items-center">
+          <!-- Marca -->
+          <div class="flex items-center gap-2.5 mb-6">
+            <span class="grid h-10 w-10 place-items-center rounded-xl bg-bosque text-white font-sans font-extrabold text-sm shadow-lg shadow-bosque/20">OA</span>
+            <span class="font-mono text-xs font-bold tracking-[0.25em] text-bosque uppercase">Ohtli AI</span>
+          </div>
 
-        <div class="flex gap-2 flex-wrap justify-center">
-          <button id="open-moods"
-            class="bg-lima-soft border border-bosque/40 text-tinta text-sm rounded-full px-4 py-2.5 hover:border-bosque transition">
-            🎯 Elegir mi mood
-          </button>
-          <button id="open-camera-home"
-            class="bg-white border border-arena text-tinta text-sm rounded-full px-4 py-2.5 hover:border-real transition">
-            📷 Foto o imagen
-          </button>
-          <button id="surprise-me"
-            class="bg-white border border-arena text-tinta text-sm rounded-full px-4 py-2.5 hover:border-real transition">
-            🎲 Sorpréndeme
-          </button>
+          <!-- Pregunta principal -->
+          <h1 class="font-sans text-[2.6rem] leading-[1.1] font-extrabold tracking-[-0.03em] text-tinta text-center mb-3">
+            ¿A dónde vamos hoy?
+          </h1>
+          <p class="text-sm text-tinta-suave text-center max-w-sm mb-8 leading-relaxed">
+            <em>Ohtli</em> significa «camino» en náhuat.<br/>Dinos qué buscas y trazamos el tuyo por El Salvador.
+          </p>
+
+          <!-- Input -->
+          <form id="home-form" class="w-full max-w-md flex gap-2 mb-5">
+            <input id="home-input" type="text" placeholder="Pregúntale a tu guía..."
+              class="flex-1 bg-white border border-arena rounded-full px-5 py-3 text-sm text-tinta placeholder-tinta-suave/60 focus:outline-none focus:border-real shadow-sm" />
+            <button type="submit" aria-label="Enviar"
+              class="w-12 h-12 rounded-full bg-real text-white font-bold hover:bg-real-dark transition flex-shrink-0 shadow-md shadow-real/20">➤</button>
+          </form>
+
+          <!-- Accesos rápidos -->
+          <div class="flex gap-2 flex-wrap justify-center">
+            <button id="open-moods"
+              class="bg-lima-soft border border-bosque/40 text-tinta text-sm rounded-full px-4 py-2.5 hover:border-bosque hover:shadow-sm transition">
+              🎯 Elegir mi mood
+            </button>
+            <button id="open-camera-home"
+              class="bg-white border border-arena text-tinta text-sm rounded-full px-4 py-2.5 hover:border-real hover:shadow-sm transition">
+              📷 Foto o imagen
+            </button>
+            <button id="surprise-me"
+              class="bg-white border border-arena text-tinta text-sm rounded-full px-4 py-2.5 hover:border-real hover:shadow-sm transition">
+              🎲 Sorpréndeme
+            </button>
+          </div>
         </div>
       </div>
 
@@ -115,11 +131,15 @@
       <!-- ===== VISTA 3: CHAT ===== -->
       <div id="chat-view" class="hidden flex-1 flex-col overflow-hidden">
         <header class="px-5 py-4 border-b border-arena flex items-center gap-3">
-          <span class="text-bosque font-bold text-2xl tracking-tight">01</span>
-          <div>
-            <p class="text-bosque text-[11px] tracking-widest font-bold">[TOURISTSV]</p>
+          <span class="grid h-9 w-9 place-items-center rounded-lg bg-bosque text-white font-sans font-extrabold text-xs shadow-sm">OA</span>
+          <div class="flex-1">
+            <p class="text-bosque text-[11px] tracking-[0.2em] font-bold uppercase">Ohtli AI</p>
             <h1 class="text-sm font-medium text-tinta">Tu guía inteligente de El Salvador</h1>
           </div>
+          <button id="reset-chat" title="Nuevo chat"
+            class="flex items-center gap-1.5 text-xs text-tinta-suave border border-arena rounded-full px-3 py-2 hover:border-real hover:text-real transition flex-shrink-0">
+            ↺ Nuevo chat
+          </button>
         </header>
 
         <main id="chat" class="flex-1 overflow-y-auto px-5 py-4 space-y-3"></main>
@@ -204,13 +224,100 @@
     });
 
     function popupHTML(p, color) {
-      const img = p.image_url
-        ? `<img src="${p.image_url}" style="width:100%;border-radius:8px;margin-bottom:6px;max-height:100px;object-fit:cover;" onerror="this.remove()" />`
-        : '';
-      const dept = p.department ? `<span style="font-size:11px;color:#4A4A4A"> · ${p.department}</span>` : '';
-      return `${img}<b style="color:${color}">${p.name}</b>${dept}<br>
-        <span style="font-size:12px;color:#111">${p.description || ''}</span>`;
+      const imgSrc = p.image_url || `/api/place-image?name=${encodeURIComponent(p.name)}`;
+      const img = `<img src="${imgSrc}" loading="lazy"
+        style="width:100%;border-radius:8px;margin-bottom:8px;max-height:130px;object-fit:cover;"
+        onerror="this.remove()" alt="${p.name}" />`;
+      const dept = p.department ? `<span style="font-size:12px;color:#4A4A4A"> · ${p.department}</span>` : '';
+      return `${img}<b style="color:${color};font-size:15px">${p.name}</b>${dept}<br>
+        <span style="font-size:13px;color:#111;line-height:1.5">${p.description || ''}</span>
+        <div class="around-slot"></div>
+        <div class="guides-slot"></div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          <button onclick="askMore('${(p.name || '').replace(/'/g, "\\'")}')"
+            style="background:#17B5E8;color:#fff;border:none;border-radius:12px;
+            padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">📖 Más info</button>
+          <button onclick="showAround(this, ${p.lat}, ${p.lng})"
+            style="background:#1A6DE8;color:#fff;border:none;border-radius:12px;
+            padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">✨ ¿Qué hay cerca?</button>
+          <button onclick="showGuides(this, ${p.lat}, ${p.lng})"
+            style="background:#2D6A23;color:#fff;border:none;border-radius:12px;
+            padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">👤 Guía turístico</button>
+        </div>`;
     }
+
+    const POPUP_OPTS = { maxWidth: 360, minWidth: 300 };
+
+    const typeLabels = { restaurant: '🍽 Restaurante', business: '🏪 Negocio', hotel: '🏨 Hotel' };
+
+    window.askMore = function (placeName) {
+      map.closePopup();
+      goToChatAndSend(`Cuéntame más sobre ${placeName}: un poco de historia, qué hacer ahí, costos aproximados de entrada si aplica, y un consejo práctico para visitarlo.`);
+    };
+
+    window.showAround = async function (btn, lat, lng) {
+      const popup = btn.closest('.leaflet-popup-content') || btn.parentElement.parentElement;
+      const slot = popup.querySelector('.around-slot');
+      btn.textContent = 'Buscando...';
+      btn.disabled = true;
+      try {
+        const res = await fetch(`/api/around?lat=${lat}&lng=${lng}`);
+        const data = await res.json();
+        if (!data.results || !data.results.length) {
+          slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
+            Aún no hay negocios registrados cerca de este punto.</div>`;
+        } else {
+          slot.innerHTML = data.results.map(r => {
+            const extra = [
+              typeLabels[r.type] || '📍',
+              r.price_range ? `💰 ${r.price_range}` : '',
+              r.distance_km != null ? `a ${Number(r.distance_km).toFixed(1)} km` : '',
+            ].filter(Boolean).join(' · ');
+            return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #EEE;">
+              <b style="font-size:13px;color:#111">${r.name}</b><br>
+              <span style="font-size:12px;color:#4A4A4A">${extra}</span>
+              ${r.description ? `<br><span style="font-size:12px;color:#111">${r.description}</span>` : ''}
+            </div>`;
+          }).join('');
+        }
+      } catch (e) {
+        slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
+          No pude consultar los alrededores ahora.</div>`;
+      }
+      btn.remove();
+    };
+
+    window.showGuides = async function (btn, lat, lng) {
+      const popup = btn.closest('.leaflet-popup-content') || btn.parentElement.parentElement;
+      const slot = popup.querySelector('.guides-slot');
+      btn.textContent = 'Buscando guías...';
+      btn.disabled = true;
+      try {
+        const res = await fetch(`/api/guides?lat=${lat}&lng=${lng}`);
+        const data = await res.json();
+        if (!data.results || !data.results.length) {
+          slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
+            Aún no hay guías registrados en esta zona. 
+            <a href="/guia" style="color:#1A6DE8;font-weight:bold">¿Eres guía? Regístrate →</a></div>`;
+        } else {
+          slot.innerHTML = data.results.map(g => {
+            const tel = (g.telefono || '').replace(/[^+\d]/g, '');
+            return `<div style="margin-top:8px;padding:8px;border:1px solid #E8F2EC;background:#F7FBF5;border-radius:10px;">
+              <b style="font-size:13px;color:#2D6A23">👤 ${g.nombre}</b><br>
+              ${g.descripcion ? `<span style="font-size:12px;color:#111">${g.descripcion}</span><br>` : ''}
+              <span style="font-size:12px;color:#4A4A4A">🗣 ${g.idiomas || 'Español'} · 📍 ${g.departamento}</span><br>
+              <a href="https://wa.me/${tel.replace('+','')}" target="_blank"
+                style="display:inline-block;margin-top:5px;background:#2D6A23;color:#fff;border-radius:10px;
+                padding:4px 10px;font-size:12px;text-decoration:none;">💬 Contactar por WhatsApp</a>
+            </div>`;
+          }).join('');
+        }
+      } catch (e) {
+        slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
+          No pude buscar guías en este momento.</div>`;
+      }
+      btn.remove();
+    };
 
     async function loadDefaultPlaces() {
       try {
@@ -219,7 +326,7 @@
         data.places.forEach(p => {
           L.marker([p.lat, p.lng], { icon: defaultIcon(p.category) })
             .addTo(map)
-            .bindPopup(popupHTML(p, '#2D6A23'));
+            .bindPopup(popupHTML(p, '#2D6A23'), POPUP_OPTS);
         });
       } catch (e) { console.error('No se pudo cargar el catálogo', e); }
     }
@@ -274,7 +381,7 @@
         setTimeout(() => {
           const marker = L.marker([p.lat, p.lng], { icon: pinIcon(i + 1) })
             .addTo(map)
-            .bindPopup(popupHTML(p, '#1A6DE8'));
+            .bindPopup(popupHTML(p, '#1A6DE8'), POPUP_OPTS);
           state.markers.push(marker);
           coords.push([p.lat, p.lng]);
 
@@ -474,6 +581,25 @@
       goToChatAndSend(msg);
     });
 
+    // --- Reiniciar chat ---
+    document.getElementById('reset-chat').addEventListener('click', () => {
+      // Limpiar conversación e historial de la IA
+      chatEl.innerHTML = '';
+      state.history = [];
+      // Limpiar mapa (ruta, pines de IA y botón de empezar)
+      clearMap();
+      state.lastPlaces = [];
+      map.flyTo(state.userLocation || [13.7, -89.2], state.userLocation ? 11 : 9, { duration: 0.8 });
+      // Limpiar moods y su selección visual
+      state.moods = { vibe: null, budget: null, energy: null };
+      document.querySelectorAll('.mood-btn').forEach(b =>
+        b.classList.remove('border-bosque', 'ring-2', 'ring-bosque/40', 'font-bold'));
+      document.getElementById('start-route').disabled = true;
+      renderContextBar();
+      // Volver a la pantalla de inicio
+      showView('home');
+    });
+
     // --- Chat ---
     document.getElementById('chat-form').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -535,7 +661,9 @@
         state.history.push({ role: 'user', content: '[Envié una foto para que la identifiques]' });
         state.history.push({ role: 'assistant', content: JSON.stringify(data) });
 
-        drawPlaces(data.places);
+        // Nota: a diferencia del chat, las fotos NO mueven el mapa ni marcan
+        // lugares — la identificación se queda en la conversación. Si el
+        // turista quiere verlo en el mapa, puede pedirlo con un mensaje.
       } catch (err) {
         removeTyping();
         addBubble('No pude analizar la imagen. Revisa tu conexión e intenta de nuevo.', 'ai');

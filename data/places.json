@@ -5,184 +5,656 @@
       "lat": 13.4936,
       "lng": -89.3811,
       "category": "playa",
-      "tags": ["surf", "mochilero", "adrenalina", "fiesta", "vida nocturna"],
-      "description": "El pueblo surfero más famoso del país: olas, hostales económicos y atardeceres icónicos."
+      "tags": [
+        "surf",
+        "mochilero",
+        "adrenalina",
+        "fiesta",
+        "vida nocturna"
+      ],
+      "description": "El pueblo surfero más famoso del país: olas, hostales económicos y atardeceres icónicos.",
+      "department": "La Libertad"
     },
     {
       "name": "Playa El Zonte",
       "lat": 13.4958,
       "lng": -89.4408,
       "category": "playa",
-      "tags": ["surf", "mochilero", "tranquilidad", "bitcoin beach"],
-      "description": "Cuna de Bitcoin Beach, olas de clase mundial y ambiente más relajado que El Tunco."
+      "tags": [
+        "surf",
+        "mochilero",
+        "tranquilidad",
+        "bitcoin beach"
+      ],
+      "description": "Cuna de Bitcoin Beach, olas de clase mundial y ambiente más relajado que El Tunco.",
+      "department": "La Libertad"
     },
     {
-      "name": "Playa El Cuco",
-      "lat": 13.1758,
-      "lng": -88.1075,
+      "name": "Playa El Sunzal",
+      "lat": 13.4931,
+      "lng": -89.3958,
       "category": "playa",
-      "tags": ["tranquilidad", "premium", "oriente"],
-      "description": "Playa extensa de arena oscura en el oriente, cerca de resorts como Las Flores."
+      "tags": [
+        "surf",
+        "intermedio",
+        "tranquilidad",
+        "clases de surf"
+      ],
+      "description": "Ola larga y noble, perfecta para aprender a surfear; la vecina tranquila de El Tunco.",
+      "department": "La Libertad"
+    },
+    {
+      "name": "Playa Mizata",
+      "lat": 13.5203,
+      "lng": -89.5919,
+      "category": "playa",
+      "tags": [
+        "surf",
+        "mochilero",
+        "tranquilidad"
+      ],
+      "description": "Rincón surfero sin multitudes al occidente de la Costa del Bálsamo.",
+      "department": "La Libertad"
+    },
+    {
+      "name": "Playa San Diego",
+      "lat": 13.4728,
+      "lng": -89.2708,
+      "category": "playa",
+      "tags": [
+        "familiar",
+        "intermedio",
+        "cercana a la capital"
+      ],
+      "description": "Playa extensa y accesible, favorita de las familias capitalinas los fines de semana.",
+      "department": "La Libertad"
+    },
+    {
+      "name": "Puerto de La Libertad",
+      "lat": 13.4881,
+      "lng": -89.3222,
+      "category": "ciudad",
+      "tags": [
+        "malecón",
+        "mariscos",
+        "gastronomía",
+        "familiar"
+      ],
+      "description": "Malecón y muelle artesanal: mariscos frescos y el punto de partida de la costa surfera.",
+      "department": "La Libertad"
+    },
+    {
+      "name": "Playa Los Cóbanos",
+      "lat": 13.5236,
+      "lng": -89.8075,
+      "category": "playa",
+      "tags": [
+        "snorkel",
+        "buceo",
+        "arrecife",
+        "tranquilidad"
+      ],
+      "description": "Único arrecife de coral del país: snorkel, buceo y pesca artesanal en Sonsonate.",
+      "department": "Sonsonate"
+    },
+    {
+      "name": "Salinitas",
+      "lat": 13.5289,
+      "lng": -89.8214,
+      "category": "playa",
+      "tags": [
+        "premium",
+        "resort",
+        "familiar"
+      ],
+      "description": "Zona de resorts frente al mar junto al arrecife de Los Cóbanos.",
+      "department": "Sonsonate"
+    },
+    {
+      "name": "Playa Metalío",
+      "lat": 13.6258,
+      "lng": -89.9236,
+      "category": "playa",
+      "tags": [
+        "tranquilidad",
+        "familiar",
+        "mochilero"
+      ],
+      "description": "Playa amplia de arena oscura y cocoteros, ideal para un día tranquilo en Sonsonate.",
+      "department": "Sonsonate"
+    },
+    {
+      "name": "Barra de Santiago",
+      "lat": 13.6989,
+      "lng": -90.0203,
+      "category": "naturaleza",
+      "tags": [
+        "manglares",
+        "kayak",
+        "tortugas",
+        "tranquilidad"
+      ],
+      "description": "Barra de arena entre el mar y un estero de manglares; kayak y liberación de tortugas.",
+      "department": "Ahuachapán"
     },
     {
       "name": "Playa Costa del Sol",
       "lat": 13.3339,
       "lng": -88.9358,
       "category": "playa",
-      "tags": ["familiar", "premium", "tranquilidad"],
-      "description": "La franja costera más larga del país, ideal para descanso familiar y hoteles frente al mar."
+      "tags": [
+        "familiar",
+        "premium",
+        "tranquilidad"
+      ],
+      "description": "La franja costera más larga del país, ideal para descanso familiar y hoteles frente al mar.",
+      "department": "La Paz"
+    },
+    {
+      "name": "Playa El Espino",
+      "lat": 13.1731,
+      "lng": -88.3078,
+      "category": "playa",
+      "tags": [
+        "tranquilidad",
+        "familiar",
+        "extensa"
+      ],
+      "description": "Una de las playas más largas y apacibles del país, en la costa de Usulután.",
+      "department": "Usulután"
+    },
+    {
+      "name": "Playa El Cuco",
+      "lat": 13.1758,
+      "lng": -88.1075,
+      "category": "playa",
+      "tags": [
+        "tranquilidad",
+        "premium",
+        "oriente"
+      ],
+      "description": "Playa extensa de arena oscura en el oriente, cerca de resorts como Las Flores.",
+      "department": "San Miguel"
+    },
+    {
+      "name": "Playa Las Flores",
+      "lat": 13.1489,
+      "lng": -88.1594,
+      "category": "playa",
+      "tags": [
+        "surf",
+        "premium",
+        "oriente",
+        "surf camp"
+      ],
+      "description": "Ola de clase mundial en San Miguel; surf camps y resorts boutique.",
+      "department": "San Miguel"
+    },
+    {
+      "name": "Playa El Tamarindo",
+      "lat": 13.1614,
+      "lng": -87.9036,
+      "category": "playa",
+      "tags": [
+        "tranquilidad",
+        "familiar",
+        "golfo"
+      ],
+      "description": "Aguas calmas del Golfo de Fonseca, perfectas para nadar y ver atardeceres.",
+      "department": "La Unión"
     },
     {
       "name": "Volcán de Santa Ana (Ilamatepec)",
       "lat": 13.8536,
       "lng": -89.6297,
       "category": "montaña",
-      "tags": ["senderismo", "adrenalina", "mochilero", "naturaleza"],
-      "description": "El volcán más alto del país; su cráter guarda una laguna turquesa impresionante."
+      "tags": [
+        "senderismo",
+        "adrenalina",
+        "mochilero",
+        "naturaleza"
+      ],
+      "description": "El volcán más alto del país; su cráter guarda una laguna turquesa impresionante.",
+      "department": "Santa Ana"
     },
     {
       "name": "Cerro Verde",
       "lat": 13.8267,
       "lng": -89.6233,
       "category": "montaña",
-      "tags": ["naturaleza", "tranquilidad", "familiar"],
-      "description": "Parque nacional con senderos entre bosque nebuloso y vistas a los volcanes Izalco y Santa Ana."
+      "tags": [
+        "naturaleza",
+        "tranquilidad",
+        "familiar"
+      ],
+      "description": "Parque nacional con senderos entre bosque nebuloso y vistas a los volcanes Izalco y Santa Ana.",
+      "department": "Santa Ana"
     },
     {
       "name": "El Boquerón",
       "lat": 13.7344,
       "lng": -89.2867,
       "category": "montaña",
-      "tags": ["naturaleza", "tranquilidad", "cerca de la capital"],
-      "description": "Cráter del volcán de San Salvador a solo 30 minutos de la capital, clima fresco y miradores."
+      "tags": [
+        "naturaleza",
+        "tranquilidad",
+        "cerca de la capital"
+      ],
+      "description": "Cráter del volcán de San Salvador a solo 30 minutos de la capital, clima fresco y miradores.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Cerro El Pital",
+      "lat": 14.3806,
+      "lng": -89.1236,
+      "category": "montaña",
+      "tags": [
+        "clima frío",
+        "senderismo",
+        "camping",
+        "tranquilidad"
+      ],
+      "description": "El punto más alto de El Salvador (2,730 m): bosque nuboso, hortensias y clima de abrigo.",
+      "department": "Chalatenango"
+    },
+    {
+      "name": "Volcán de Conchagua",
+      "lat": 13.2775,
+      "lng": -87.8464,
+      "category": "montaña",
+      "tags": [
+        "miradores",
+        "camping",
+        "adrenalina",
+        "golfo"
+      ],
+      "description": "Miradores sobre el Golfo de Fonseca; camping con amanecer sobre las islas.",
+      "department": "La Unión"
     },
     {
       "name": "Lago de Coatepeque",
       "lat": 13.8667,
       "lng": -89.55,
       "category": "naturaleza",
-      "tags": ["lago", "premium", "tranquilidad", "deportes acuáticos"],
-      "description": "Lago de cráter azul turquesa, restaurantes sobre el agua y deportes acuáticos."
+      "tags": [
+        "lago",
+        "premium",
+        "tranquilidad",
+        "deportes acuáticos"
+      ],
+      "description": "Lago de cráter azul turquesa, restaurantes sobre el agua y deportes acuáticos.",
+      "department": "Santa Ana"
     },
     {
-      "name": "Suchitoto",
-      "lat": 13.9381,
-      "lng": -89.0278,
-      "category": "pueblo",
-      "tags": ["cultura", "colonial", "tranquilidad", "arte"],
-      "description": "Pueblo colonial de calles empedradas, arte, y vista al lago Suchitlán."
+      "name": "Lago de Güija",
+      "lat": 14.2653,
+      "lng": -89.5406,
+      "category": "naturaleza",
+      "tags": [
+        "lago",
+        "pesca",
+        "arqueología",
+        "tranquilidad"
+      ],
+      "description": "Lago compartido con Guatemala, con petrograbados e islotes para recorrer en lancha.",
+      "department": "Santa Ana"
     },
     {
-      "name": "Juayúa",
-      "lat": 13.8411,
-      "lng": -89.7458,
-      "category": "pueblo",
-      "tags": ["gastronomía", "ruta de las flores", "mochilero", "festival"],
-      "description": "Corazón de la Ruta de las Flores, famoso por su festival gastronómico de fin de semana."
-    },
-    {
-      "name": "Concepción de Ataco",
-      "lat": 13.8703,
-      "lng": -89.85,
-      "category": "pueblo",
-      "tags": ["ruta de las flores", "murales", "café", "tranquilidad"],
-      "description": "Pueblo de murales coloridos, café de altura y clima fresco en la Ruta de las Flores."
-    },
-    {
-      "name": "Apaneca",
-      "lat": 13.8592,
-      "lng": -89.8025,
-      "category": "pueblo",
-      "tags": ["ruta de las flores", "adrenalina", "café", "canopy"],
-      "description": "Famoso por sus fincas de café, laberinto de Albania y tours de canopy y buggies."
-    },
-    {
-      "name": "Nahuizalco",
-      "lat": 13.7775,
-      "lng": -89.7364,
-      "category": "pueblo",
-      "tags": ["artesanías", "cultura", "ruta de las flores", "mercado nocturno"],
-      "description": "Pueblo artesanal de raíces indígenas, famoso por su mimbre y su mercado nocturno."
-    },
-    {
-      "name": "Centro Histórico de San Salvador",
-      "lat": 13.6975,
-      "lng": -89.1908,
-      "category": "cultura",
-      "tags": ["historia", "arquitectura", "mochilero", "urbano"],
-      "description": "Palacio Nacional, Teatro Nacional, Catedral e Iglesia El Rosario: el renacer del centro capitalino."
-    },
-    {
-      "name": "Iglesia El Rosario",
-      "lat": 13.6961,
-      "lng": -89.1878,
-      "category": "cultura",
-      "tags": ["arquitectura", "historia", "arte"],
-      "description": "Por fuera parece un hangar; por dentro, un arcoíris de luz. Joya arquitectónica latinoamericana."
-    },
-    {
-      "name": "Joya de Cerén",
-      "lat": 13.8272,
-      "lng": -89.3661,
-      "category": "cultura",
-      "tags": ["arqueología", "historia", "unesco"],
-      "description": "La 'Pompeya de América': aldea maya sepultada por ceniza, Patrimonio de la Humanidad UNESCO."
-    },
-    {
-      "name": "Ruinas de Tazumal",
-      "lat": 13.9789,
-      "lng": -89.6742,
-      "category": "cultura",
-      "tags": ["arqueología", "historia", "maya"],
-      "description": "El sitio maya más importante del país, con su pirámide principal en Chalchuapa."
-    },
-    {
-      "name": "Catedral de Santa Ana",
-      "lat": 13.9942,
-      "lng": -89.5598,
-      "category": "cultura",
-      "tags": ["arquitectura", "historia", "neogótico"],
-      "description": "Catedral neogótica única en la región, corazón de la segunda ciudad del país."
+      "name": "Parque Nacional Montecristo",
+      "lat": 14.4008,
+      "lng": -89.3606,
+      "category": "naturaleza",
+      "tags": [
+        "bosque nuboso",
+        "senderismo",
+        "trifinio"
+      ],
+      "description": "Bosque nuboso donde se juntan El Salvador, Guatemala y Honduras; orquídeas y quetzales.",
+      "department": "Santa Ana"
     },
     {
       "name": "Parque Nacional El Imposible",
       "lat": 13.8442,
       "lng": -89.9481,
       "category": "naturaleza",
-      "tags": ["senderismo", "adrenalina", "biodiversidad", "mochilero"],
-      "description": "La reserva natural más grande del país: bosque tropical, ríos y biodiversidad única."
+      "tags": [
+        "senderismo",
+        "adrenalina",
+        "biodiversidad",
+        "mochilero"
+      ],
+      "description": "La reserva natural más grande del país: bosque tropical, ríos y biodiversidad única.",
+      "department": "Ahuachapán"
     },
     {
       "name": "Bahía de Jiquilisco",
       "lat": 13.2278,
       "lng": -88.5583,
       "category": "naturaleza",
-      "tags": ["manglares", "tranquilidad", "kayak", "tortugas"],
-      "description": "Reserva de biosfera con manglares, islas y anidación de tortugas marinas; ideal para kayak."
+      "tags": [
+        "manglares",
+        "tranquilidad",
+        "kayak",
+        "tortugas"
+      ],
+      "description": "Reserva de biosfera con manglares, islas y anidación de tortugas marinas; ideal para kayak.",
+      "department": "Usulután"
+    },
+    {
+      "name": "Salto de Malacatiupán",
+      "lat": 13.9944,
+      "lng": -89.7492,
+      "category": "naturaleza",
+      "tags": [
+        "aguas termales",
+        "cascada",
+        "adrenalina"
+      ],
+      "description": "Cascadas de agua termal: ríos tibios que caen entre rocas, únicos en la región.",
+      "department": "Ahuachapán"
+    },
+    {
+      "name": "Cascada Los Tercios",
+      "lat": 13.9292,
+      "lng": -89.0219,
+      "category": "naturaleza",
+      "tags": [
+        "cascada",
+        "geología",
+        "senderismo"
+      ],
+      "description": "Cascada de columnas hexagonales de piedra, a minutos de Suchitoto.",
+      "department": "Cuscatlán"
+    },
+    {
+      "name": "Puerta del Diablo",
+      "lat": 13.5936,
+      "lng": -89.1889,
+      "category": "naturaleza",
+      "tags": [
+        "miradores",
+        "rappel",
+        "adrenalina",
+        "cerca de la capital"
+      ],
+      "description": "Formación rocosa con vistas panorámicas; rappel y canopy a minutos de San Salvador.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Suchitoto",
+      "lat": 13.9381,
+      "lng": -89.0278,
+      "category": "pueblo",
+      "tags": [
+        "cultura",
+        "colonial",
+        "tranquilidad",
+        "arte"
+      ],
+      "description": "Pueblo colonial de calles empedradas, arte, y vista al lago Suchitlán.",
+      "department": "Cuscatlán"
+    },
+    {
+      "name": "Juayúa",
+      "lat": 13.8411,
+      "lng": -89.7458,
+      "category": "pueblo",
+      "tags": [
+        "gastronomía",
+        "ruta de las flores",
+        "mochilero",
+        "festival"
+      ],
+      "description": "Corazón de la Ruta de las Flores, famoso por su festival gastronómico de fin de semana.",
+      "department": "Sonsonate"
+    },
+    {
+      "name": "Concepción de Ataco",
+      "lat": 13.8703,
+      "lng": -89.85,
+      "category": "pueblo",
+      "tags": [
+        "ruta de las flores",
+        "murales",
+        "café",
+        "tranquilidad"
+      ],
+      "description": "Pueblo de murales coloridos, café de altura y clima fresco en la Ruta de las Flores.",
+      "department": "Ahuachapán"
+    },
+    {
+      "name": "Apaneca",
+      "lat": 13.8592,
+      "lng": -89.8025,
+      "category": "pueblo",
+      "tags": [
+        "ruta de las flores",
+        "adrenalina",
+        "café",
+        "canopy"
+      ],
+      "description": "Famoso por sus fincas de café, laberinto de Albania y tours de canopy y buggies.",
+      "department": "Ahuachapán"
+    },
+    {
+      "name": "Salcoatitán",
+      "lat": 13.8339,
+      "lng": -89.7286,
+      "category": "pueblo",
+      "tags": [
+        "ruta de las flores",
+        "café",
+        "gastronomía",
+        "tranquilidad"
+      ],
+      "description": "El pueblo más pequeño de la Ruta de las Flores, famoso por su yuca frita y sus cafés.",
+      "department": "Sonsonate"
+    },
+    {
+      "name": "Nahuizalco",
+      "lat": 13.7775,
+      "lng": -89.7364,
+      "category": "pueblo",
+      "tags": [
+        "artesanías",
+        "cultura",
+        "ruta de las flores",
+        "mercado nocturno"
+      ],
+      "description": "Pueblo artesanal de raíces indígenas, famoso por su mimbre y su mercado nocturno.",
+      "department": "Sonsonate"
+    },
+    {
+      "name": "La Palma",
+      "lat": 14.3172,
+      "lng": -89.1706,
+      "category": "pueblo",
+      "tags": [
+        "artesanías",
+        "murales",
+        "cultura",
+        "montaña"
+      ],
+      "description": "Pueblo de montaña donde nació el estilo artesanal de Fernando Llort; murales por todas partes.",
+      "department": "Chalatenango"
+    },
+    {
+      "name": "Panchimalco",
+      "lat": 13.6142,
+      "lng": -89.1794,
+      "category": "pueblo",
+      "tags": [
+        "cultura",
+        "indígena",
+        "iglesias"
+      ],
+      "description": "Pueblo de raíces náhuat-pipiles con una de las iglesias coloniales más antiguas del país.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Alegría y su Laguna",
+      "lat": 13.5031,
+      "lng": -88.4869,
+      "category": "pueblo",
+      "tags": [
+        "flores",
+        "café",
+        "laguna",
+        "tranquilidad"
+      ],
+      "description": "El 'pueblo de las flores' de Usulután, con su laguna esmeralda dentro de un cráter.",
+      "department": "Usulután"
+    },
+    {
+      "name": "Berlín",
+      "lat": 13.4983,
+      "lng": -88.5317,
+      "category": "pueblo",
+      "tags": [
+        "café",
+        "clima fresco",
+        "tranquilidad"
+      ],
+      "description": "Pueblo cafetalero de casas de madera y niebla; tours de café y miradores.",
+      "department": "Usulután"
+    },
+    {
+      "name": "Perquín",
+      "lat": 13.9583,
+      "lng": -88.1608,
+      "category": "pueblo",
+      "tags": [
+        "historia",
+        "museo",
+        "montaña",
+        "cultura"
+      ],
+      "description": "Capital histórica de la memoria en Morazán: museo de la Revolución y aire de pinares.",
+      "department": "Morazán"
+    },
+    {
+      "name": "Ilobasco",
+      "lat": 13.8425,
+      "lng": -88.8483,
+      "category": "pueblo",
+      "tags": [
+        "artesanías",
+        "sorpresas",
+        "cultura"
+      ],
+      "description": "Cuna de las 'sorpresas', miniaturas de barro famosas en todo el mundo.",
+      "department": "Cabañas"
+    },
+    {
+      "name": "Centro Histórico de San Salvador",
+      "lat": 13.6975,
+      "lng": -89.1908,
+      "category": "cultura",
+      "tags": [
+        "historia",
+        "arquitectura",
+        "mochilero",
+        "urbano",
+        "ciudad"
+      ],
+      "description": "Palacio Nacional, Teatro Nacional, Catedral e Iglesia El Rosario: el renacer del centro capitalino.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Iglesia El Rosario",
+      "lat": 13.6961,
+      "lng": -89.1878,
+      "category": "cultura",
+      "tags": [
+        "arquitectura",
+        "historia",
+        "arte"
+      ],
+      "description": "Por fuera parece un hangar; por dentro, un arcoíris de luz. Joya arquitectónica latinoamericana.",
+      "department": "San Salvador"
+    },
+    {
+      "name": "Joya de Cerén",
+      "lat": 13.8272,
+      "lng": -89.3661,
+      "category": "cultura",
+      "tags": [
+        "arqueología",
+        "historia",
+        "unesco"
+      ],
+      "description": "La 'Pompeya de América': aldea maya sepultada por ceniza, Patrimonio de la Humanidad UNESCO.",
+      "department": "La Libertad"
+    },
+    {
+      "name": "Ruinas de Tazumal",
+      "lat": 13.9789,
+      "lng": -89.6742,
+      "category": "cultura",
+      "tags": [
+        "arqueología",
+        "historia",
+        "maya"
+      ],
+      "description": "El sitio maya más importante del país, con su pirámide principal en Chalchuapa.",
+      "department": "Santa Ana"
+    },
+    {
+      "name": "Catedral de Santa Ana",
+      "lat": 13.9942,
+      "lng": -89.5598,
+      "category": "cultura",
+      "tags": [
+        "arquitectura",
+        "historia",
+        "neogótico"
+      ],
+      "description": "Catedral neogótica única en la región, corazón de la segunda ciudad del país.",
+      "department": "Santa Ana"
     },
     {
       "name": "Paseo El Carmen",
       "lat": 13.6739,
       "lng": -89.2797,
       "category": "ciudad",
-      "tags": ["fiesta", "gastronomía", "mochilero", "intermedio", "vida nocturna"],
-      "description": "La calle más viva de Santa Tecla: bares, restaurantes, música en vivo y ambiente bohemio de noche."
+      "tags": [
+        "fiesta",
+        "gastronomía",
+        "mochilero",
+        "intermedio",
+        "vida nocturna"
+      ],
+      "description": "La calle más viva de Santa Tecla: bares, restaurantes, música en vivo y ambiente bohemio de noche.",
+      "department": "La Libertad"
     },
     {
       "name": "Zona Rosa",
       "lat": 13.6889,
       "lng": -89.2394,
       "category": "ciudad",
-      "tags": ["fiesta", "premium", "restaurantes", "vida nocturna"],
-      "description": "El distrito gastronómico y de vida nocturna más exclusivo de San Salvador."
+      "tags": [
+        "fiesta",
+        "premium",
+        "restaurantes",
+        "vida nocturna"
+      ],
+      "description": "El distrito gastronómico y de vida nocturna más exclusivo de San Salvador.",
+      "department": "San Salvador"
     },
     {
       "name": "La Gran Vía",
       "lat": 13.6772,
       "lng": -89.2531,
       "category": "ciudad",
-      "tags": ["intermedio", "compras", "restaurantes", "tranquilidad", "familiar"],
-      "description": "Centro comercial al aire libre con restaurantes, cines y ambiente seguro para pasear de noche."
+      "tags": [
+        "intermedio",
+        "compras",
+        "restaurantes",
+        "tranquilidad",
+        "familiar"
+      ],
+      "description": "Centro comercial al aire libre con restaurantes, cines y ambiente seguro para pasear de noche.",
+      "department": "La Libertad"
     }
   ]
 }

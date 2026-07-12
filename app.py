@@ -2,7 +2,7 @@ import os
 import json
 import base64
 import requests
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, abort
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
@@ -18,54 +18,56 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 PULGARCITO_ROOT = os.getenv("PULGARCITO_URL", "https://api.pulgarcito.dev")
 PULGARCITO_BASE = f"{PULGARCITO_ROOT}/v1"
 
-# ============ CATÁLOGO HÍBRIDO: API Pulgarcito + JSON local ============
+# ============ CATÁLOGO DEL MAPA: SOLO LUGARES CURADOS (JSON local) ============
+# Decisión de diseño: el mapa muestra únicamente nuestro catálogo curado.
+# La API de Pulgarcito se usa bajo demanda: búsqueda semántica cuando el
+# turista pregunta/manda foto, y negocios cercanos al hacer clic en un pin.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(BASE_DIR, "data", "places.json"), encoding="utf-8") as f:
-    LOCAL_CATALOG = json.load(f)["places"]
+    CATALOG = json.load(f)["places"]
+print(f"[TouristSV] Catálogo curado: {len(CATALOG)} lugares")
+
+# ============ GUÍAS TURÍSTICOS (data/guias.json) ============
+GUIAS_PATH = os.path.join(BASE_DIR, "data", "guias.json")
 
 
-def load_pulgarcito_places():
-    """Trae los lugares turísticos verificados de la API Pulgarcito.
-    Si falla, devolvemos lista vacía y el catálogo local nos respalda."""
+def load_guias():
     try:
-        import requests as _rq  # ya importado arriba; alias por claridad
-        try:
-            resp = _rq.get(
-                f"{PULGARCITO_ROOT}/v2/places",
-                params={"type": "tourist_place", "limit": 100},
-                timeout=6,
-            )
-            resp.raise_for_status()
-        except Exception:
-            # Reintento sin parámetros (defaults del servidor) por si el limit alto falla
-            resp = _rq.get(f"{PULGARCITO_ROOT}/v2/places", timeout=6)
-            resp.raise_for_status()
-        results = resp.json().get("results", [])
-        places = []
-        for p in results:
-            if p.get("lat") and p.get("lng"):
-                places.append({
-                    "name": p.get("name", "Sin nombre"),
-                    "lat": p["lat"],
-                    "lng": p["lng"],
-                    "category": p.get("category") or "lugar",
-                    "tags": p.get("tags") or p.get("keywords") or [],
-                    "description": p.get("description") or "",
-                    "image_url": p.get("image_url"),
-                    "department": p.get("department"),
-                })
-        print(f"[Pulgarcito] Catálogo cargado: {len(places)} lugares verificados")
-        return places
-    except Exception as e:
-        print(f"[Pulgarcito] No se pudo cargar el catálogo remoto: {e}")
+        with open(GUIAS_PATH, encoding="utf-8") as f:
+            return json.load(f).get("guias", [])
+    except FileNotFoundError:
         return []
 
 
-# Fusionar: los de la API primero (datos verificados), los locales que no estén repetidos
-_remote = load_pulgarcito_places()
-_remote_names = {p["name"].lower().strip() for p in _remote}
-CATALOG = _remote + [p for p in LOCAL_CATALOG if p["name"].lower().strip() not in _remote_names]
-print(f"[TouristSV] Catálogo total: {len(CATALOG)} lugares")
+def save_guias(guias):
+    with open(GUIAS_PATH, "w", encoding="utf-8") as f:
+        json.dump({"guias": guias}, f, ensure_ascii=False, indent=2)
+
+
+# Centro aproximado de cada departamento, para relacionar guías con pines
+DEPT_CENTERS = {
+    "Ahuachapán": (13.90, -89.90),
+    "Santa Ana": (14.05, -89.55),
+    "Sonsonate": (13.65, -89.70),
+    "Chalatenango": (14.15, -89.05),
+    "La Libertad": (13.60, -89.35),
+    "San Salvador": (13.72, -89.19),
+    "Cuscatlán": (13.85, -89.05),
+    "La Paz": (13.45, -88.95),
+    "Cabañas": (13.90, -88.75),
+    "San Vicente": (13.60, -88.75),
+    "Usulután": (13.40, -88.45),
+    "San Miguel": (13.50, -88.15),
+    "Morazán": (13.80, -88.10),
+    "La Unión": (13.40, -87.90),
+}
+
+
+def haversine_km(lat1, lng1, lat2, lng2):
+    from math import radians, sin, cos, asin, sqrt
+    lat1, lng1, lat2, lng2 = map(radians, [lat1, lng1, lat2, lng2])
+    a = sin((lat2 - lat1) / 2) ** 2 + cos(lat1) * cos(lat2) * sin((lng2 - lng1) / 2) ** 2
+    return 2 * 6371 * asin(sqrt(a))
 
 
 # ============ CATÁLOGO DE COMIDAS TÍPICAS (Pulgarcito /v1/foods) ============
@@ -126,7 +128,7 @@ catalog_lines = "\n".join(
     for p in CATALOG[:60]
 )
 
-SYSTEM_PROMPT = f"""Eres el asistente de TouristSV, un guía turístico experto en El Salvador.
+SYSTEM_PROMPT = f"""Eres Ohtli AI, el asistente turístico, un guía turístico experto en El Salvador.
 Tu trabajo: recomendar lugares reales de El Salvador según el perfil del turista
 (playa/montaña/ciudad, mochilero/intermedio/premium, tranquilidad/fiesta/adrenalina)
 y responder preguntas sobre cultura, comida, historia y rutas.
@@ -139,7 +141,7 @@ REGLAS DE RESPUESTA:
 1. Responde SIEMPRE únicamente con un objeto JSON válido, sin markdown, sin ```.
 2. Estructura exacta:
 {{
-  "reply": "tu respuesta conversacional en español, cálida y breve (máx 3 oraciones)",
+  "reply": "tu respuesta conversacional en español, cálida y breve (máx 3 oraciones; PERO si el turista pide detalles o 'más información' sobre un lugar, extiéndete a 6-8 oraciones cubriendo historia, qué hacer, costos aproximados y un consejo práctico)",
   "search_query": "término corto para buscar datos verificados, o null",
   "search_type": "place | food | toy | null",
   "places": [
@@ -158,8 +160,13 @@ REGLAS DE RESPUESTA:
    Sobre "search_type": clasifica el search_query: "place" si es un lugar,
    "food" si es comida o bebida típica, "toy" si es un juguete o artesanía
    tradicional. Si search_query es null, pon null.
-3. "places" puede tener de 0 a 5 lugares. Si la pregunta no requiere lugares
-   (ej: "¿qué son las pupusas?"), devuelve "places": [].
+3. REGLA DE ORO sobre "places": recomienda UN (1) SOLO lugar, el que mejor
+   encaje con lo que pide el turista. Solo incluye 2 o 3 lugares cuando el
+   usuario pida EXPLÍCITAMENTE una ruta, itinerario o "varios lugares", y en
+   ese caso TODOS deben estar en la misma zona (a menos de ~30 km entre sí,
+   ej: solo Ruta de las Flores, o solo costa de La Libertad). NUNCA mezcles
+   occidente y oriente del país en una misma respuesta. Si la pregunta no
+   requiere lugares (ej: "¿qué son las pupusas?"), devuelve "places": [].
 4. Prioriza lugares del catálogo oficial. Si el turista pide algo que no está
    en el catálogo, puedes sugerir otro lugar real de El Salvador con sus
    coordenadas correctas.
@@ -194,6 +201,17 @@ def search_pulgarcito(query, limit=3):
     except Exception as e:
         print(f"[Pulgarcito search] Error: {e}")
         return []
+
+
+def cluster_places(places, max_km=50):
+    """Candado geográfico: descarta lugares a más de max_km del principal,
+    para que las rutas nunca crucen el país entero. Máximo 3 paradas."""
+    if not places or len(places) <= 1:
+        return places
+    base = places[0]
+    kept = [p for p in places
+            if haversine_km(base["lat"], base["lng"], p["lat"], p["lng"]) <= max_km]
+    return kept[:3]
 
 
 def enrich_with_search(parsed):
@@ -238,8 +256,67 @@ def enrich_with_search(parsed):
 
 
 @app.route("/")
-def index():
+def portada():
+    """Portada: elegir perfil (turista o guía)."""
+    return render_template("portada.html")
+
+
+@app.route("/turista")
+def turista():
+    """La app principal del turista (chat + mapa)."""
     return render_template("index.html")
+
+
+# @app.route("/guia")
+# (reemplazada abajo por la versión activa)
+
+
+@app.route("/guia")
+def guia():
+    """Formulario de registro para guías turísticos."""
+    return render_template("guia.html")
+
+
+# ============ API DE GUÍAS TURÍSTICOS ============
+@app.route("/api/guides")
+def get_guides():
+    """Devuelve los guías que cubren la zona de un pin (por departamento cercano)."""
+    try:
+        lat = float(request.args.get("lat"))
+        lng = float(request.args.get("lng"))
+    except (TypeError, ValueError):
+        return jsonify({"results": []}), 400
+
+    results = []
+    for g in load_guias():
+        center = DEPT_CENTERS.get(g.get("departamento"))
+        if center and haversine_km(lat, lng, center[0], center[1]) <= 50:
+            results.append(g)
+    return jsonify({"results": results})
+
+
+@app.route("/api/guides", methods=["POST"])
+def add_guide():
+    """Registra un nuevo guía desde el formulario de /guia."""
+    data = request.get_json() or {}
+    nombre = (data.get("nombre") or "").strip()
+    telefono = (data.get("telefono") or "").strip()
+    departamento = (data.get("departamento") or "").strip()
+
+    if not nombre or not telefono or departamento not in DEPT_CENTERS:
+        return jsonify({"ok": False, "error": "Nombre, teléfono y departamento válido son obligatorios."}), 400
+
+    guias = load_guias()
+    guias.append({
+        "nombre": nombre,
+        "telefono": telefono,
+        "correo": (data.get("correo") or "").strip(),
+        "idiomas": (data.get("idiomas") or "").strip(),
+        "descripcion": (data.get("descripcion") or "").strip(),
+        "departamento": departamento,
+    })
+    save_guias(guias)
+    return jsonify({"ok": True})
 
 
 # ============ NUEVO: endpoint del catálogo ============
@@ -364,11 +441,112 @@ def vision():
         raw = raw.replace("```json", "").replace("```", "").strip()
         parsed = json.loads(raw)
         parsed = enrich_with_search(parsed)
+        parsed["places"] = cluster_places(parsed.get("places", []))
         return jsonify(parsed)
     except json.JSONDecodeError:
         return jsonify({"reply": raw, "places": []})
     except Exception as e:
         return jsonify({"reply": f"Ups, hubo un problema: {str(e)}", "places": []}), 500
+
+
+# ============ NEGOCIOS Y EMPRENDIMIENTOS CERCA DE UN PIN ============
+@app.route("/api/around")
+def around():
+    """Al hacer clic en un pin curado, trae negocios/restaurantes/hoteles
+    cercanos desde la API (lo específico se carga bajo demanda)."""
+    lat = request.args.get("lat")
+    lng = request.args.get("lng")
+    if not lat or not lng:
+        return jsonify({"results": []}), 400
+
+    try:
+        resp = requests.get(
+            f"{PULGARCITO_ROOT}/v2/places",
+            params={"near": f"{lat},{lng}", "radius_km": 10, "limit": 15},
+            timeout=8,
+        )
+        resp.raise_for_status()
+        results = []
+        for p in resp.json().get("results", []):
+            # Solo lo específico: negocios, restaurantes, hoteles
+            # (los tourist_place genéricos ya los cubre nuestro catálogo)
+            if p.get("type") in ("restaurant", "business", "hotel"):
+                results.append({
+                    "name": p.get("name", "Sin nombre"),
+                    "type": p.get("type"),
+                    "description": p.get("description") or "",
+                    "price_range": p.get("price_range"),
+                    "distance_km": p.get("distance_km"),
+                })
+            if len(results) >= 4:
+                break
+        return jsonify({"results": results})
+    except Exception as e:
+        print(f"[Pulgarcito around] Error: {e}")
+        return jsonify({"results": [], "error": str(e)})
+
+
+# ============ IMÁGENES DE LUGARES (Wikipedia + caché local) ============
+IMAGES_CACHE_PATH = os.path.join(BASE_DIR, "data", "images_cache.json")
+
+try:
+    with open(IMAGES_CACHE_PATH, encoding="utf-8") as f:
+        IMG_CACHE = json.load(f)
+except FileNotFoundError:
+    IMG_CACHE = {}
+
+
+def save_img_cache():
+    with open(IMAGES_CACHE_PATH, "w", encoding="utf-8") as f:
+        json.dump(IMG_CACHE, f, ensure_ascii=False, indent=2)
+
+
+def fetch_wikipedia_image(name):
+    """Busca la foto principal del artículo de Wikipedia que mejor
+    coincida con el lugar. Devuelve la URL de la miniatura o None."""
+    try:
+        resp = requests.get(
+            "https://es.wikipedia.org/w/api.php",
+            params={
+                "action": "query",
+                "generator": "search",
+                "gsrsearch": f"{name} El Salvador",
+                "gsrlimit": 1,
+                "prop": "pageimages",
+                "piprop": "thumbnail",
+                "pithumbsize": 600,
+                "format": "json",
+            },
+            headers={"User-Agent": "OhtliAI/1.0 (hackathon project)"},
+            timeout=6,
+        )
+        resp.raise_for_status()
+        pages = resp.json().get("query", {}).get("pages", {})
+        if not pages:
+            return None
+        page = next(iter(pages.values()))
+        return page.get("thumbnail", {}).get("source")
+    except Exception as e:
+        print(f"[Wikipedia img] Error con '{name}': {e}")
+        return None
+
+
+@app.route("/api/place-image")
+def place_image():
+    """Redirige a la foto del lugar. Busca en Wikipedia la primera vez
+    y cachea el resultado (incluso los 'no encontrados') en un JSON local."""
+    name = (request.args.get("name") or "").strip()
+    if not name:
+        abort(404)
+
+    if name not in IMG_CACHE:
+        IMG_CACHE[name] = fetch_wikipedia_image(name) or ""
+        save_img_cache()
+
+    url = IMG_CACHE[name]
+    if not url:
+        abort(404)
+    return redirect(url)
 
 
 @app.route("/api/chat", methods=["POST"])
@@ -400,6 +578,7 @@ def chat():
         raw = raw.replace("```json", "").replace("```", "").strip()
         parsed = json.loads(raw)
         parsed = enrich_with_search(parsed)
+        parsed["places"] = cluster_places(parsed.get("places", []))
         return jsonify(parsed)
     except json.JSONDecodeError:
         return jsonify({"reply": raw, "places": []})
