@@ -5,7 +5,7 @@
       "lat": 13.4936,
       "lng": -89.3811,
       "category": "playa",
-      "tags": ["surf", "mochilero", "adrenalina", "vida nocturna"],
+      "tags": ["surf", "mochilero", "adrenalina", "fiesta", "vida nocturna"],
       "description": "El pueblo surfero más famoso del país: olas, hostales económicos y atardeceres icónicos."
     },
     {
@@ -159,6 +159,30 @@
       "category": "naturaleza",
       "tags": ["manglares", "tranquilidad", "kayak", "tortugas"],
       "description": "Reserva de biosfera con manglares, islas y anidación de tortugas marinas; ideal para kayak."
+    },
+    {
+      "name": "Paseo El Carmen",
+      "lat": 13.6739,
+      "lng": -89.2797,
+      "category": "ciudad",
+      "tags": ["fiesta", "gastronomía", "mochilero", "intermedio", "vida nocturna"],
+      "description": "La calle más viva de Santa Tecla: bares, restaurantes, música en vivo y ambiente bohemio de noche."
+    },
+    {
+      "name": "Zona Rosa",
+      "lat": 13.6889,
+      "lng": -89.2394,
+      "category": "ciudad",
+      "tags": ["fiesta", "premium", "restaurantes", "vida nocturna"],
+      "description": "El distrito gastronómico y de vida nocturna más exclusivo de San Salvador."
+    },
+    {
+      "name": "La Gran Vía",
+      "lat": 13.6772,
+      "lng": -89.2531,
+      "category": "ciudad",
+      "tags": ["intermedio", "compras", "restaurantes", "tranquilidad", "familiar"],
+      "description": "Centro comercial al aire libre con restaurantes, cines y ambiente seguro para pasear de noche."
     }
   ]
 }

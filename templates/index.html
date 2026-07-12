@@ -38,6 +38,15 @@
     .typing-dot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes blink { 0%, 60%, 100% { opacity: 0.25; } 30% { opacity: 1; } }
     .leaflet-container { background: #F4F2EC; }
+    #left-panel { transition: width 0.3s ease, min-width 0.3s ease; }
+    #left-panel.panel-collapsed {
+      width: 0 !important;
+      min-width: 0 !important;
+      overflow: hidden;
+      border-right: none;
+    }
+    .fade-in { animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
   </style>
 </head>
 
@@ -45,56 +54,103 @@
 
   <div class="flex h-full">
 
-    <!-- ============ PANEL IZQUIERDO: CHAT ============ -->
-    <aside class="w-[42%] min-w-[380px] flex flex-col border-r border-arena bg-white">
+    <!-- ============ PANEL IZQUIERDO ============ -->
+    <aside id="left-panel" class="w-[42%] min-w-[380px] flex flex-col border-r border-arena bg-white relative">
 
-      <!-- Header -->
-      <header class="px-5 py-4 border-b border-arena flex items-center gap-3">
-        <span class="text-bosque font-bold text-2xl tracking-tight">01</span>
-        <div>
-          <p class="text-bosque text-[11px] tracking-widest font-bold">[TOURISTSV]</p>
-          <h1 class="text-sm font-medium text-tinta">Tu guía inteligente de El Salvador</h1>
-        </div>
-      </header>
+      <!-- ===== VISTA 1: HOME (pregunta grande + chips) ===== -->
+      <div id="home-view" class="flex-1 flex flex-col items-center justify-center px-8 fade-in">
+        <p class="text-bosque text-3xl tracking-widest font-bold mb-3">TOURISTSV</p>
+      </br>
+        <h1 class="text-4xl font-bold text-tinta text-center leading-snug mb-8">
+          ¿A dónde vamos hoy?
+        </h1>
 
-      <!-- Mensajes -->
-      <main id="chat" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+        <form id="home-form" class="w-full max-w-md flex gap-2 mb-5">
+          <input id="home-input" type="text" placeholder="Pregúntale a tu guía..."
+            class="flex-1 bg-white border border-arena rounded-full px-5 py-3 text-sm text-tinta placeholder-tinta-suave/60 focus:outline-none focus:border-real shadow-sm" />
+          <button type="submit" aria-label="Enviar"
+            class="w-12 h-12 rounded-full bg-real text-white font-bold hover:bg-real-dark transition flex-shrink-0">➤</button>
+        </form>
 
-        <!-- Tarjetas de mood (estado inicial) -->
-        <div id="mood-cards" class="space-y-3">
-          <p class="text-xs text-tinta-suave">Elige tu mood y armamos tu ruta:</p>
-
-          <div class="grid grid-cols-2 gap-2 text-sm">
-            <button data-mood="vibe" data-value="Playa" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">🏖 Playa</button>
-            <button data-mood="vibe" data-value="Montaña" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">⛰ Montaña</button>
-            <button data-mood="budget" data-value="Mochilero" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">🎒 Mochilero</button>
-            <button data-mood="budget" data-value="Premium" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">💎 Premium</button>
-            <button data-mood="energy" data-value="Tranquilidad" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">🌙 Tranquilidad</button>
-            <button data-mood="energy" data-value="Adrenalina" class="mood-btn bg-lima-soft border border-bosque/30 text-tinta rounded-lg py-3 hover:border-bosque transition">⚡ Adrenalina</button>
-          </div>
-
-          <button id="start-route" disabled
-            class="w-full py-3 rounded-lg bg-real text-white font-bold text-sm disabled:opacity-30 disabled:cursor-not-allowed hover:bg-real-dark transition">
-            Armar mi ruta →
+        <div class="flex gap-2 flex-wrap justify-center">
+          <button id="open-moods"
+            class="bg-lima-soft border border-bosque/40 text-tinta text-sm rounded-full px-4 py-2.5 hover:border-bosque transition">
+            🎯 Elegir mi mood
+          </button>
+          <button id="open-camera-home"
+            class="bg-white border border-arena text-tinta text-sm rounded-full px-4 py-2.5 hover:border-real transition">
+            📷 Imagen
+          </button>
+          <button id="surprise-me"
+            class="bg-white border border-arena text-tinta text-sm rounded-full px-4 py-2.5 hover:border-real transition">
+            🎲 Sorpréndeme
           </button>
         </div>
+      </div>
 
-      </main>
+      <!-- ===== VISTA 2: MOODS (pantalla completa del panel) ===== -->
+      <div id="mood-view" class="hidden flex-1 flex-col px-6 py-6 fade-in overflow-y-auto">
+        <button id="back-home" class="self-start text-sm text-tinta-suave hover:text-tinta mb-4">← Volver</button>
+        <h2 class="text-2xl font-bold text-tinta mb-1">Elige tu mood</h2>
+        <p class="text-sm text-tinta-suave mb-6">Selecciona una opción de cada fila y armamos tu ruta.</p>
 
-      <!-- Input -->
-      <footer class="p-4 border-t border-arena">
-        <form id="chat-form" class="flex gap-2">
-          <input id="chat-input" type="text" placeholder="Pregúntale a tu guía..."
-            class="flex-1 bg-white border border-arena rounded-lg px-4 py-2.5 text-sm text-tinta placeholder-tinta-suave/60 focus:outline-none focus:border-real" />
-          <button type="submit"
-            class="px-4 rounded-lg bg-real text-white font-bold hover:bg-real-dark transition">➤</button>
-        </form>
-      </footer>
+        <div class="grid grid-cols-3 gap-3 flex-1 content-start">
+          <button data-mood="vibe" data-value="Playa" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🏖<br/>Playa</button>
+          <button data-mood="vibe" data-value="Montaña" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">⛰<br/>Montaña</button>
+          <button data-mood="vibe" data-value="Ciudad" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🏙<br/>Ciudad</button>
+          </br>
+          <button data-mood="budget" data-value="Mochilero" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🎒<br/>Mochilero</button>
+          <button data-mood="budget" data-value="Intermedio" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">💵<br/>Intermedio</button>
+          <button data-mood="budget" data-value="Premium" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">💎<br/>Premium</button>
+          </br>
+          <button data-mood="energy" data-value="Tranquilidad" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🌙<br/>Tranquilidad</button>
+          <button data-mood="energy" data-value="Fiesta" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🎉<br/>Fiesta</button>
+          <button data-mood="energy" data-value="Adrenalina" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">⚡<br/>Adrenalina</button>
+        </div>
+
+        <button id="start-route" disabled
+          class="w-full py-4 mt-6 rounded-2xl bg-real text-white font-bold text-base disabled:opacity-30 disabled:cursor-not-allowed hover:bg-real-dark transition">
+          Armar mi ruta →
+        </button>
+      </div>
+
+      <!-- ===== VISTA 3: CHAT ===== -->
+      <div id="chat-view" class="hidden flex-1 flex-col overflow-hidden">
+        <header class="px-5 py-4 border-b border-arena flex items-center gap-3">
+          <span class="text-bosque font-bold text-2xl tracking-tight">01</span>
+          <div>
+            <p class="text-bosque text-[11px] tracking-widest font-bold">[TOURISTSV]</p>
+            <h1 class="text-sm font-medium text-tinta">Tu guía inteligente de El Salvador</h1>
+          </div>
+        </header>
+
+        <main id="chat" class="flex-1 overflow-y-auto px-5 py-4 space-y-3"></main>
+
+        <footer class="p-4 border-t border-arena">
+          <form id="chat-form" class="flex gap-2 items-center">
+            <button type="button" id="open-camera-chat" aria-label="Foto o imagen"
+              class="w-11 h-11 rounded-full border border-arena text-lg hover:border-real transition flex-shrink-0">📷</button>
+            <input id="chat-input" type="text" placeholder="Pregúntale a tu guía..."
+              class="flex-1 bg-white border border-arena rounded-full px-4 py-2.5 text-sm text-tinta placeholder-tinta-suave/60 focus:outline-none focus:border-real" />
+            <button type="submit" aria-label="Enviar"
+              class="w-11 h-11 rounded-full bg-real text-white font-bold hover:bg-real-dark transition flex-shrink-0">➤</button>
+          </form>
+        </footer>
+      </div>
+
+      <!-- Input oculto para cámara / subir imagen -->
+      <input type="file" id="image-input" accept="image/*" capture="environment" class="hidden" />
+
     </aside>
 
     <!-- ============ PANEL DERECHO: MAPA ============ -->
     <section class="flex-1 relative">
-      <!-- Barra de contexto -->
+      <!-- Botón para ocultar/mostrar el chat -->
+      <button id="panel-toggle" aria-label="Ocultar u mostrar el chat"
+        class="absolute left-0 top-1/2 -translate-y-1/2 z-[1000] w-8 h-14 bg-white border border-arena border-l-0
+               rounded-r-xl shadow-md text-tinta-suave hover:text-real hover:border-real transition text-sm font-bold">
+        ◀
+      </button>
       <div id="context-bar" class="absolute top-4 left-4 z-[1000] flex gap-2 flex-wrap"></div>
       <div id="map" class="h-full w-full"></div>
     </section>
@@ -105,12 +161,25 @@
     // ================== ESTADO ==================
     const state = {
       moods: { vibe: null, budget: null, energy: null },
-      history: [],       // historial para la IA [{role, content}]
+      history: [],
       markers: [],
       routeLine: null,
       userLocation: null,
       lastPlaces: [],
     };
+
+    // ================== NAVEGACIÓN ENTRE VISTAS ==================
+    const views = {
+      home: document.getElementById('home-view'),
+      mood: document.getElementById('mood-view'),
+      chat: document.getElementById('chat-view'),
+    };
+
+    function showView(name) {
+      Object.values(views).forEach(v => { v.classList.add('hidden'); v.classList.remove('flex'); });
+      views[name].classList.remove('hidden');
+      views[name].classList.add('flex');
+    }
 
     // ================== MAPA ==================
     const map = L.map('map', { zoomControl: false }).setView([13.7, -89.2], 9);
@@ -121,7 +190,7 @@
     }).addTo(map);
 
     // ===== Sitios por defecto (catálogo) =====
-    const categoryEmoji = { playa: '🏖', 'montaña': '⛰', pueblo: '🏘', cultura: '🏛', naturaleza: '🌿' };
+    const categoryEmoji = { playa: '🏖', 'montaña': '⛰', pueblo: '🏘', cultura: '🏛', naturaleza: '🌿', ciudad: '🏙' };
 
     const defaultIcon = (category) => L.divIcon({
       className: '',
@@ -191,7 +260,6 @@
 
       const coords = [];
       places.forEach((p, i) => {
-        // Dibuja cada marcador con un pequeño delay (aparición "viva")
         setTimeout(() => {
           const marker = L.marker([p.lat, p.lng], { icon: pinIcon(i + 1) })
             .addTo(map)
@@ -201,7 +269,7 @@
 
           if (i === places.length - 1) {
             map.flyToBounds(L.latLngBounds(coords), { padding: [60, 60], duration: 1.2 });
-            showStartButton();   // La ruta NO se traza: aparece el botón "Empezar"
+            showStartButton();
           }
         }, i * 500);
       });
@@ -225,7 +293,6 @@
       btn.textContent = 'Calculando ruta...';
       btn.disabled = true;
 
-      // Waypoints: ubicación actual (si existe) + paradas en orden
       const waypoints = [];
       if (state.userLocation) waypoints.push(state.userLocation);
       state.lastPlaces.forEach(p => waypoints.push([p.lat, p.lng]));
@@ -248,7 +315,6 @@
         if (state.routeLine) map.removeLayer(state.routeLine);
 
         if (data.geometry && data.geometry.length) {
-          // Ruta real por carretera devuelta por la API
           state.routeLine = L.polyline(data.geometry, {
             color: '#1A6DE8', weight: 4, opacity: 0.9,
           }).addTo(map);
@@ -256,7 +322,6 @@
             addBubble(`🚗 Ruta lista: ${data.distance_km} km · aprox. ${data.duration_min} min en carro.`, 'ai');
           }
         } else {
-          // Respaldo: línea recta punteada si la API no respondió
           state.routeLine = L.polyline(waypoints, {
             color: '#1A6DE8', weight: 3, dashArray: '8 8', opacity: 0.8,
           }).addTo(map);
@@ -285,6 +350,14 @@
       return div;
     }
 
+    function addImageBubble(src) {
+      const div = document.createElement('div');
+      div.className = 'ml-auto max-w-[60%] bg-lima-soft border border-bosque/40 rounded-xl rounded-br-sm p-1.5';
+      div.innerHTML = `<img src="${src}" class="rounded-lg w-full" alt="Imagen enviada" />`;
+      chatEl.appendChild(div);
+      chatEl.scrollTop = chatEl.scrollHeight;
+    }
+
     function addTyping() {
       const div = document.createElement('div');
       div.id = 'typing';
@@ -296,7 +369,7 @@
     const removeTyping = () => document.getElementById('typing')?.remove();
 
     // ================== BARRA DE CONTEXTO ==================
-    const moodEmoji = { 'Playa': '🏖', 'Montaña': '⛰', 'Mochilero': '🎒', 'Premium': '💎', 'Tranquilidad': '🌙', 'Adrenalina': '⚡' };
+    const moodEmoji = { 'Playa': '🏖', 'Montaña': '⛰', 'Ciudad': '🏙', 'Mochilero': '🎒', 'Intermedio': '💵', 'Premium': '💎', 'Tranquilidad': '🌙', 'Fiesta': '🎉', 'Adrenalina': '⚡' };
 
     function renderContextBar() {
       const bar = document.getElementById('context-bar');
@@ -332,36 +405,65 @@
       }
     }
 
+    function goToChatAndSend(msg) {
+      showView('chat');
+      addBubble(msg, 'user');
+      sendToAI(msg);
+    }
+
+    // ================== COLAPSAR / EXPANDIR CHAT ==================
+    const leftPanel = document.getElementById('left-panel');
+    const panelToggle = document.getElementById('panel-toggle');
+
+    panelToggle.addEventListener('click', () => {
+      const collapsed = leftPanel.classList.toggle('panel-collapsed');
+      panelToggle.textContent = collapsed ? '▶' : '◀';
+      // Leaflet necesita recalcular su tamaño tras la animación
+      setTimeout(() => map.invalidateSize(), 320);
+    });
+
     // ================== EVENTOS ==================
-    // Tarjetas de mood
+    // --- Home ---
+    document.getElementById('home-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('home-input');
+      const msg = input.value.trim();
+      if (!msg) return;
+      input.value = '';
+      goToChatAndSend(msg);
+    });
+
+    document.getElementById('open-moods').addEventListener('click', () => showView('mood'));
+    document.getElementById('back-home').addEventListener('click', () => showView('home'));
+
+    document.getElementById('surprise-me').addEventListener('click', () => {
+      goToChatAndSend('¡Sorpréndeme! Recomiéndame una ruta única en El Salvador que pocos turistas conocen.');
+    });
+
+    // --- Moods ---
     document.querySelectorAll('.mood-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const { mood, value } = btn.dataset;
         state.moods[mood] = value;
 
-        // Visual: desmarca hermanos, marca este
         document.querySelectorAll(`[data-mood="${mood}"]`).forEach(b =>
           b.classList.remove('border-bosque', 'ring-2', 'ring-bosque/40', 'font-bold'));
         btn.classList.add('border-bosque', 'ring-2', 'ring-bosque/40', 'font-bold');
 
         renderContextBar();
 
-        // Habilita el botón si las 3 categorías están elegidas
         const ready = Object.values(state.moods).every(Boolean);
         document.getElementById('start-route').disabled = !ready;
       });
     });
 
-    // Botón "Armar mi ruta"
     document.getElementById('start-route').addEventListener('click', () => {
       const { vibe, budget, energy } = state.moods;
-      document.getElementById('mood-cards').remove();
       const msg = `Quiero un plan de ${vibe.toLowerCase()}, presupuesto ${budget.toLowerCase()}, con vibra de ${energy.toLowerCase()}. Ármame una ruta.`;
-      addBubble(msg, 'user');
-      sendToAI(msg);
+      goToChatAndSend(msg);
     });
 
-    // Chat libre
+    // --- Chat ---
     document.getElementById('chat-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const input = document.getElementById('chat-input');
@@ -370,6 +472,25 @@
       input.value = '';
       addBubble(msg, 'user');
       sendToAI(msg);
+    });
+
+    // --- Cámara / subir imagen (funcionalidad de reconocimiento: próximamente) ---
+    const imageInput = document.getElementById('image-input');
+    document.getElementById('open-camera-home').addEventListener('click', () => imageInput.click());
+    document.getElementById('open-camera-chat').addEventListener('click', () => imageInput.click());
+
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (!file) return;
+      showView('chat');
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        addImageBubble(e.target.result);
+        // TODO: aquí conectaremos el reconocimiento de imágenes con Gemini
+        addBubble('📷 ¡Buena foto! Muy pronto podré reconocer lugares, comida y artesanías de El Salvador. 👀', 'ai');
+      };
+      reader.readAsDataURL(file);
+      imageInput.value = '';
     });
   </script>
 </body>

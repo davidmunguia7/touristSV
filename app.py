@@ -10,7 +10,7 @@ load_dotenv()
 
 app = Flask(__name__)
 # CORREGIDO: os.getenv recibe el NOMBRE de la variable del .env, nunca la key directa
-client = genai.Client(api_key=os.getenv("AQ.Ab8RN6KUeb25x5H8dvU3JL7vzhDeHYQvjw5heu9i-Ha9kKwviA"))
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 # ============ NUEVO: CATÁLOGO DE SITIOS ============
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -26,8 +26,8 @@ catalog_lines = "\n".join(
 
 SYSTEM_PROMPT = f"""Eres el asistente de TouristSV, un guía turístico experto en El Salvador.
 Tu trabajo: recomendar lugares reales de El Salvador según el perfil del turista
-(playa/montaña, mochilero/premium, tranquilidad/adrenalina) y responder preguntas
-sobre cultura, comida, historia y rutas.
+(playa/montaña/ciudad, mochilero/intermedio/premium, tranquilidad/fiesta/adrenalina)
+y responder preguntas sobre cultura, comida, historia y rutas.
 
 CATÁLOGO OFICIAL DE SITIOS (usa SIEMPRE estos nombres y coordenadas exactas
 cuando recomiendes un lugar que esté aquí):
