@@ -256,14 +256,14 @@ def enrich_with_search(parsed):
 
 
 @app.route("/")
-def portada():
-    """Portada: elegir perfil (turista o guía)."""
-    return render_template("portada.html")
+def index():
+    """La app principal (chat + mapa) es lo primero que se ve."""
+    return render_template("index.html")
 
 
 @app.route("/turista")
 def turista():
-    """La app principal del turista (chat + mapa)."""
+    """Alias por si quedó algún enlace viejo apuntando aquí."""
     return render_template("index.html")
 
 
@@ -447,43 +447,6 @@ def vision():
         return jsonify({"reply": raw, "places": []})
     except Exception as e:
         return jsonify({"reply": f"Ups, hubo un problema: {str(e)}", "places": []}), 500
-
-
-# ============ NEGOCIOS Y EMPRENDIMIENTOS CERCA DE UN PIN ============
-@app.route("/api/around")
-def around():
-    """Al hacer clic en un pin curado, trae negocios/restaurantes/hoteles
-    cercanos desde la API (lo específico se carga bajo demanda)."""
-    lat = request.args.get("lat")
-    lng = request.args.get("lng")
-    if not lat or not lng:
-        return jsonify({"results": []}), 400
-
-    try:
-        resp = requests.get(
-            f"{PULGARCITO_ROOT}/v2/places",
-            params={"near": f"{lat},{lng}", "radius_km": 10, "limit": 15},
-            timeout=8,
-        )
-        resp.raise_for_status()
-        results = []
-        for p in resp.json().get("results", []):
-            # Solo lo específico: negocios, restaurantes, hoteles
-            # (los tourist_place genéricos ya los cubre nuestro catálogo)
-            if p.get("type") in ("restaurant", "business", "hotel"):
-                results.append({
-                    "name": p.get("name", "Sin nombre"),
-                    "type": p.get("type"),
-                    "description": p.get("description") or "",
-                    "price_range": p.get("price_range"),
-                    "distance_km": p.get("distance_km"),
-                })
-            if len(results) >= 4:
-                break
-        return jsonify({"results": results})
-    except Exception as e:
-        print(f"[Pulgarcito around] Error: {e}")
-        return jsonify({"results": [], "error": str(e)})
 
 
 # ============ IMÁGENES DE LUGARES (Wikipedia + caché local) ============

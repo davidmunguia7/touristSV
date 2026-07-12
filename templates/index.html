@@ -102,6 +102,12 @@
             </button>
           </div>
         </div>
+
+        <!-- Footer: registro de guías -->
+        <a href="/guia"
+          class="absolute bottom-5 left-1/2 -translate-x-1/2 text-xs text-tinta-suave hover:text-bosque transition whitespace-nowrap">
+          ¿Eres guía turístico? <span class="font-bold underline underline-offset-2">Regístrate aquí →</span>
+        </a>
       </div>
 
       <!-- ===== VISTA 2: MOODS (pantalla completa del panel) ===== -->
@@ -223,110 +229,160 @@
       iconAnchor: [13, 13],
     });
 
-    function popupHTML(p, color) {
+    function popupHTML(p, color, extraHTML = '', usedActions = []) {
       const imgSrc = p.image_url || `/api/place-image?name=${encodeURIComponent(p.name)}`;
       const img = `<img src="${imgSrc}" loading="lazy"
         style="width:100%;border-radius:8px;margin-bottom:8px;max-height:130px;object-fit:cover;"
         onerror="this.remove()" alt="${p.name}" />`;
       const dept = p.department ? `<span style="font-size:12px;color:#4A4A4A"> · ${p.department}</span>` : '';
+      const btn = (action, bg, label) => usedActions.includes(action) ? '' :
+        `<button data-action="${action}" style="background:${bg};color:#fff;border:none;border-radius:12px;
+          padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">${label}</button>`;
       return `${img}<b style="color:${color};font-size:15px">${p.name}</b>${dept}<br>
         <span style="font-size:13px;color:#111;line-height:1.5">${p.description || ''}</span>
-        <div class="around-slot"></div>
-        <div class="guides-slot"></div>
+        ${extraHTML}
         <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
-          <button onclick="askMore('${(p.name || '').replace(/'/g, "\\'")}')"
-            style="background:#17B5E8;color:#fff;border:none;border-radius:12px;
-            padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">📖 Más info</button>
-          <button onclick="showAround(this, ${p.lat}, ${p.lng})"
-            style="background:#1A6DE8;color:#fff;border:none;border-radius:12px;
-            padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">✨ ¿Qué hay cerca?</button>
-          <button onclick="showGuides(this, ${p.lat}, ${p.lng})"
-            style="background:#2D6A23;color:#fff;border:none;border-radius:12px;
-            padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;">👤 Guía turístico</button>
+          ${btn('route', '#0F52B1', '🚗 Iniciar ruta')}
+          ${btn('more', '#17B5E8', '📖 Más info')}
+          ${btn('near', '#1A6DE8', '🧭 Cerca de aquí')}
+          ${btn('guides', '#2D6A23', '👤 Guía turístico')}
         </div>`;
     }
 
     const POPUP_OPTS = { maxWidth: 360, minWidth: 300 };
 
-    const typeLabels = { restaurant: '🍽 Restaurante', business: '🏪 Negocio', hotel: '🏨 Hotel' };
+    // Estado del popup abierto (lugar, color, paneles ya mostrados)
+    map.on('popupopen', (e) => {
+      const src = e.popup._source || {};
+      state.openPopup = e.popup;
+      state.openPlace = src.placeData || null;
+      state.openColor = src.placeColor || '#2D6A23';
+      state.popupExtras = { near: '', guides: '' };
+      state.popupUsed = [];
+    });
 
-    window.askMore = function (placeName) {
-      map.closePopup();
-      goToChatAndSend(`Cuéntame más sobre ${placeName}: un poco de historia, qué hacer ahí, costos aproximados de entrada si aplica, y un consejo práctico para visitarlo.`);
-    };
+    function rerenderOpenPopup() {
+      if (!state.openPopup || !state.openPlace) return;
+      const extra = (state.popupExtras.near || '') + (state.popupExtras.guides || '');
+      state.openPopup.setContent(
+        popupHTML(state.openPlace, state.openColor, extra, state.popupUsed)
+      );
+    }
 
-    window.showAround = async function (btn, lat, lng) {
-      const popup = btn.closest('.leaflet-popup-content') || btn.parentElement.parentElement;
-      const slot = popup.querySelector('.around-slot');
-      btn.textContent = 'Buscando...';
-      btn.disabled = true;
-      try {
-        const res = await fetch(`/api/around?lat=${lat}&lng=${lng}`);
-        const data = await res.json();
-        if (!data.results || !data.results.length) {
-          slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
-            Aún no hay negocios registrados cerca de este punto.</div>`;
-        } else {
-          slot.innerHTML = data.results.map(r => {
-            const extra = [
-              typeLabels[r.type] || '📍',
-              r.price_range ? `💰 ${r.price_range}` : '',
-              r.distance_km != null ? `a ${Number(r.distance_km).toFixed(1)} km` : '',
-            ].filter(Boolean).join(' · ');
-            return `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #EEE;">
-              <b style="font-size:13px;color:#111">${r.name}</b><br>
-              <span style="font-size:12px;color:#4A4A4A">${extra}</span>
-              ${r.description ? `<br><span style="font-size:12px;color:#111">${r.description}</span>` : ''}
-            </div>`;
-          }).join('');
-        }
-      } catch (e) {
-        slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
-          No pude consultar los alrededores ahora.</div>`;
+    // Distancia en km entre dos puntos (fórmula de Haversine)
+    function distKm(lat1, lng1, lat2, lng2) {
+      const r = Math.PI / 180, R = 6371;
+      const a = Math.sin((lat2 - lat1) * r / 2) ** 2 +
+        Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin((lng2 - lng1) * r / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(a));
+    }
+
+    function nearbyCardsHTML(p) {
+      const nearby = (state.catalog || [])
+        .filter(x => x.name !== p.name)
+        .map(x => ({ ...x, dist: distKm(p.lat, p.lng, x.lat, x.lng) }))
+        .filter(x => x.dist <= 40)
+        .sort((a, b) => a.dist - b.dist)
+        .slice(0, 3);
+
+      if (!nearby.length) {
+        return `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
+          Este es un destino remoto: no hay otros lugares del catálogo a menos de 40 km.</div>`;
       }
-      btn.remove();
-    };
+      return nearby.map(x => `
+        <div style="margin-top:8px;padding:8px;border:1px solid #E7EFFD;background:#F7FAFF;border-radius:10px;">
+          <b style="font-size:13px;color:#1A6DE8">${categoryEmoji[(x.category || '').toLowerCase()] || '📍'} ${x.name}</b>
+          <span style="font-size:12px;color:#4A4A4A"> · a ${x.dist.toFixed(1)} km</span><br>
+          <span style="font-size:12px;color:#111">${x.description || ''}</span><br>
+          <a data-action="fly" data-name="${x.name}"
+            style="display:inline-block;margin-top:4px;color:#1A6DE8;font-size:12px;font-weight:bold;cursor:pointer;">
+            Ver en mapa →</a>
+        </div>`).join('');
+    }
 
-    window.showGuides = async function (btn, lat, lng) {
-      const popup = btn.closest('.leaflet-popup-content') || btn.parentElement.parentElement;
-      const slot = popup.querySelector('.guides-slot');
-      btn.textContent = 'Buscando guías...';
-      btn.disabled = true;
-      try {
-        const res = await fetch(`/api/guides?lat=${lat}&lng=${lng}`);
-        const data = await res.json();
-        if (!data.results || !data.results.length) {
-          slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
-            Aún no hay guías registrados en esta zona. 
-            <a href="/guia" style="color:#1A6DE8;font-weight:bold">¿Eres guía? Regístrate →</a></div>`;
-        } else {
-          slot.innerHTML = data.results.map(g => {
-            const tel = (g.telefono || '').replace(/[^+\d]/g, '');
-            return `<div style="margin-top:8px;padding:8px;border:1px solid #E8F2EC;background:#F7FBF5;border-radius:10px;">
-              <b style="font-size:13px;color:#2D6A23">👤 ${g.nombre}</b><br>
-              ${g.descripcion ? `<span style="font-size:12px;color:#111">${g.descripcion}</span><br>` : ''}
-              <span style="font-size:12px;color:#4A4A4A">🗣 ${g.idiomas || 'Español'} · 📍 ${g.departamento}</span><br>
-              <a href="https://wa.me/${tel.replace('+','')}" target="_blank"
-                style="display:inline-block;margin-top:5px;background:#2D6A23;color:#fff;border-radius:10px;
-                padding:4px 10px;font-size:12px;text-decoration:none;">💬 Contactar por WhatsApp</a>
-            </div>`;
-          }).join('');
-        }
-      } catch (e) {
-        slot.innerHTML = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
-          No pude buscar guías en este momento.</div>`;
+    function guideCardsHTML(results) {
+      if (!results || !results.length) {
+        return `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
+          Aún no hay guías registrados en esta zona.
+          <a href="/guia" style="color:#1A6DE8;font-weight:bold">¿Eres guía? Regístrate →</a></div>`;
       }
-      btn.remove();
-    };
+      return results.map(g => {
+        const tel = (g.telefono || '').replace(/[^+\d]/g, '');
+        return `<div style="margin-top:8px;padding:8px;border:1px solid #E8F2EC;background:#F7FBF5;border-radius:10px;">
+          <b style="font-size:13px;color:#2D6A23">👤 ${g.nombre}</b><br>
+          ${g.descripcion ? `<span style="font-size:12px;color:#111">${g.descripcion}</span><br>` : ''}
+          <span style="font-size:12px;color:#4A4A4A">🗣 ${g.idiomas || 'Español'} · 📍 ${g.departamento}</span><br>
+          <a href="https://wa.me/${tel.replace('+','')}" target="_blank"
+            style="display:inline-block;margin-top:5px;background:#2D6A23;color:#fff;border-radius:10px;
+            padding:4px 10px;font-size:12px;text-decoration:none;">💬 Contactar por WhatsApp</a>
+        </div>`;
+      }).join('');
+    }
+
+    // Un solo manejador para todos los botones dentro de popups
+    document.addEventListener('click', async (e) => {
+      const el = e.target.closest('[data-action]');
+      if (!el || !el.closest('.leaflet-popup')) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      const action = el.dataset.action;
+      const p = state.openPlace;
+
+      if (action === 'route' && p) {
+        map.closePopup();
+        showView('chat');
+        state.lastPlaces = [p];
+        hideStartButton();
+        startRoute();
+
+      } else if (action === 'more' && p) {
+        map.closePopup();
+        goToChatAndSend(`Cuéntame más sobre ${p.name}: un poco de historia, qué hacer ahí, costos aproximados de entrada si aplica, y un consejo práctico para visitarlo.`);
+
+      } else if (action === 'fly') {
+        const m = state.defaultMarkers?.[el.dataset.name];
+        if (m) {
+          map.closePopup();
+          map.flyTo(m.getLatLng(), 12, { duration: 0.9 });
+          setTimeout(() => m.openPopup(), 950);
+        }
+
+      } else if (action === 'near' && p) {
+        state.popupExtras.near = nearbyCardsHTML(p);
+        state.popupUsed.push('near');
+        rerenderOpenPopup();
+
+      } else if (action === 'guides' && p) {
+        el.textContent = 'Buscando guías...';
+        let html;
+        try {
+          const res = await fetch(`/api/guides?lat=${p.lat}&lng=${p.lng}`);
+          const data = await res.json();
+          html = guideCardsHTML(data.results);
+        } catch (err) {
+          html = `<div style="margin-top:8px;font-size:12px;color:#4A4A4A">
+            No pude buscar guías en este momento.</div>`;
+        }
+        state.popupExtras.guides = html;
+        state.popupUsed.push('guides');
+        rerenderOpenPopup();
+      }
+    });
 
     async function loadDefaultPlaces() {
       try {
         const res = await fetch('/api/places');
         const data = await res.json();
+        state.catalog = data.places;
+        state.defaultMarkers = {};
         data.places.forEach(p => {
-          L.marker([p.lat, p.lng], { icon: defaultIcon(p.category) })
+          const m = L.marker([p.lat, p.lng], { icon: defaultIcon(p.category) })
             .addTo(map)
             .bindPopup(popupHTML(p, '#2D6A23'), POPUP_OPTS);
+          m.placeData = p;
+          m.placeColor = '#2D6A23';
+          state.defaultMarkers[p.name] = m;
         });
       } catch (e) { console.error('No se pudo cargar el catálogo', e); }
     }
@@ -382,6 +438,8 @@
           const marker = L.marker([p.lat, p.lng], { icon: pinIcon(i + 1) })
             .addTo(map)
             .bindPopup(popupHTML(p, '#1A6DE8'), POPUP_OPTS);
+          marker.placeData = p;
+          marker.placeColor = '#1A6DE8';
           state.markers.push(marker);
           coords.push([p.lat, p.lng]);
 
@@ -391,6 +449,35 @@
           }
         }, i * 500);
       });
+    }
+
+    // ===== Enlace a Google Maps para navegar de verdad =====
+    function gmapsUrl(origin, places) {
+      const dest = places[places.length - 1];
+      const params = new URLSearchParams({
+        api: '1',
+        destination: `${dest.lat},${dest.lng}`,
+        travelmode: 'driving',
+      });
+      if (origin) params.set('origin', `${origin[0]},${origin[1]}`);
+      const mids = places.slice(0, -1).map(p => `${p.lat},${p.lng}`).join('|');
+      if (mids) params.set('waypoints', mids);
+      return `https://www.google.com/maps/dir/?${params.toString()}`;
+    }
+
+    function gmapsButtonHTML(origin, places) {
+      return `<a href="${gmapsUrl(origin, places)}" target="_blank" rel="noopener"
+        style="display:inline-flex;align-items:center;gap:6px;background:#1A6DE8;color:#fff;
+        border-radius:12px;padding:8px 14px;font-size:13px;font-weight:bold;text-decoration:none;">
+        🗺 Abrir en Google Maps</a>`;
+    }
+
+    function addHTMLBubble(html) {
+      const div = document.createElement('div');
+      div.className = 'mr-auto max-w-[90%] bg-real-soft border border-real/40 text-tinta rounded-xl rounded-bl-sm px-4 py-2.5 text-sm leading-relaxed';
+      div.innerHTML = html;
+      chatEl.appendChild(div);
+      chatEl.scrollTop = chatEl.scrollHeight;
     }
 
     // ===== Botón "Empezar ruta" (estilo Google Maps) =====
@@ -408,17 +495,23 @@
 
     async function startRoute() {
       const btn = document.getElementById('start-nav');
-      btn.textContent = 'Calculando ruta...';
-      btn.disabled = true;
+      if (btn) { btn.textContent = 'Calculando ruta...'; btn.disabled = true; }
 
+      // Waypoints: ubicación actual (si existe) + paradas en orden
       const waypoints = [];
       if (state.userLocation) waypoints.push(state.userLocation);
       state.lastPlaces.forEach(p => waypoints.push([p.lat, p.lng]));
 
       if (waypoints.length < 2) {
-        btn.textContent = '▶ Empezar ruta';
-        btn.disabled = false;
-        addBubble('Necesito al menos dos puntos para trazar la ruta. Activa tu ubicación o pide más paradas.', 'ai');
+        if (btn) { btn.textContent = '▶ Empezar ruta'; btn.disabled = false; }
+        // Sin ubicación no podemos trazar en la app, pero Google Maps sí
+        // puede navegar usando la ubicación del teléfono directamente:
+        if (state.lastPlaces.length) {
+          addBubble('No tengo tu ubicación para trazar la ruta aquí, pero puedes navegar directo con Google Maps:', 'ai');
+          addHTMLBubble(gmapsButtonHTML(null, state.lastPlaces));
+        } else {
+          addBubble('Necesito al menos dos puntos para trazar la ruta. Activa tu ubicación o pide más paradas.', 'ai');
+        }
         return;
       }
 
@@ -445,11 +538,13 @@
           }).addTo(map);
         }
 
+        // Para navegar de verdad: abrir la misma ruta en Google Maps
+        addHTMLBubble(gmapsButtonHTML(state.userLocation, state.lastPlaces));
+
         map.flyToBounds(state.routeLine.getBounds(), { padding: [60, 60], duration: 1 });
         hideStartButton();
       } catch (e) {
-        btn.textContent = '▶ Empezar ruta';
-        btn.disabled = false;
+        if (btn) { btn.textContent = '▶ Empezar ruta'; btn.disabled = false; }
         addBubble('No pude calcular la ruta por carretera. Intenta de nuevo.', 'ai');
       }
     }
