@@ -14,7 +14,8 @@ app = Flask(__name__)
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 # URL base de la API Pulgarcito (rutas v1, lugares v2)
-PULGARCITO_ROOT = "https://api.pulgarcito.dev"
+# Configurable desde .env por si la API cambia de servidor o se corre localmente
+PULGARCITO_ROOT = os.getenv("PULGARCITO_URL", "https://api.pulgarcito.dev")
 PULGARCITO_BASE = f"{PULGARCITO_ROOT}/v1"
 
 # ============ CATÁLOGO HÍBRIDO: API Pulgarcito + JSON local ============
@@ -28,12 +29,17 @@ def load_pulgarcito_places():
     Si falla, devolvemos lista vacía y el catálogo local nos respalda."""
     try:
         import requests as _rq  # ya importado arriba; alias por claridad
-        resp = _rq.get(
-            f"{PULGARCITO_ROOT}/v2/places",
-            params={"type": "tourist_place", "limit": 100},
-            timeout=6,
-        )
-        resp.raise_for_status()
+        try:
+            resp = _rq.get(
+                f"{PULGARCITO_ROOT}/v2/places",
+                params={"type": "tourist_place", "limit": 100},
+                timeout=6,
+            )
+            resp.raise_for_status()
+        except Exception:
+            # Reintento sin parámetros (defaults del servidor) por si el limit alto falla
+            resp = _rq.get(f"{PULGARCITO_ROOT}/v2/places", timeout=6)
+            resp.raise_for_status()
         results = resp.json().get("results", [])
         places = []
         for p in results:
@@ -61,6 +67,58 @@ _remote_names = {p["name"].lower().strip() for p in _remote}
 CATALOG = _remote + [p for p in LOCAL_CATALOG if p["name"].lower().strip() not in _remote_names]
 print(f"[TouristSV] Catálogo total: {len(CATALOG)} lugares")
 
+
+# ============ CATÁLOGO DE COMIDAS TÍPICAS (Pulgarcito /v1/foods) ============
+def load_pulgarcito_foods():
+    """Carga el catálogo curado de comidas típicas. No tiene búsqueda por
+    texto, así que lo cacheamos completo y hacemos match local por nombre."""
+    try:
+        try:
+            resp = requests.get(
+                f"{PULGARCITO_BASE}/foods",
+                params={"limit": 200},
+                timeout=8,
+            )
+            resp.raise_for_status()
+        except Exception:
+            # Reintento con defaults del servidor por si el limit alto falla
+            resp = requests.get(f"{PULGARCITO_BASE}/foods", timeout=8)
+            resp.raise_for_status()
+        foods = resp.json().get("results", [])
+        print(f"[Pulgarcito] Catálogo de comidas: {len(foods)} platillos")
+        return foods
+    except Exception as e:
+        print(f"[Pulgarcito] No se pudo cargar el catálogo de comidas: {e}")
+        return []
+
+
+FOODS = load_pulgarcito_foods()
+
+
+def _norm(s):
+    """Normaliza texto para comparar: minúsculas y sin tildes."""
+    import unicodedata
+    s = unicodedata.normalize("NFD", s.lower().strip())
+    return "".join(c for c in s if unicodedata.category(c) != "Mn")
+
+
+def match_food(query):
+    """Busca la comida del catálogo que mejor coincida con el término."""
+    q = _norm(query)
+    best, best_score = None, 0
+    for f in FOODS:
+        name = _norm(f.get("name", ""))
+        score = 0
+        if q == name:
+            score = 3
+        elif q in name or name in q:
+            score = 2
+        elif any(q in _norm(t) or _norm(t) in q for t in (f.get("tags") or [])):
+            score = 1
+        if score > best_score:
+            best, best_score = f, score
+    return best
+
 # Versión compacta del catálogo para inyectar al prompt (máx 60 para no inflar tokens)
 catalog_lines = "\n".join(
     f"- {p['name']} | lat: {p['lat']}, lng: {p['lng']} | {p['category']} | "
@@ -83,6 +141,7 @@ REGLAS DE RESPUESTA:
 {{
   "reply": "tu respuesta conversacional en español, cálida y breve (máx 3 oraciones)",
   "search_query": "término corto para buscar datos verificados, o null",
+  "search_type": "place | food | toy | null",
   "places": [
     {{
       "name": "Nombre del lugar",
@@ -96,6 +155,9 @@ REGLAS DE RESPUESTA:
    específica (ej: "¿qué es el Cerro Verde?", "háblame de las pupusas"), pon ahí
    el nombre en 2-4 palabras (ej: "Cerro Verde"). Si pide una ruta general o
    charla casual, pon null.
+   Sobre "search_type": clasifica el search_query: "place" si es un lugar,
+   "food" si es comida o bebida típica, "toy" si es un juguete o artesanía
+   tradicional. Si search_query es null, pon null.
 3. "places" puede tener de 0 a 5 lugares. Si la pregunta no requiere lugares
    (ej: "¿qué son las pupusas?"), devuelve "places": [].
 4. Prioriza lugares del catálogo oficial. Si el turista pide algo que no está
@@ -135,11 +197,36 @@ def search_pulgarcito(query, limit=3):
 
 
 def enrich_with_search(parsed):
-    """Si la IA sugirió un término de búsqueda, trae datos verificados
-    y los fusiona con los lugares de la respuesta (los verificados ganan)."""
+    """Enruta la búsqueda de datos verificados según lo que la IA identificó:
+    - place → búsqueda semántica en /v2/places/search (pines verificados)
+    - food  → match en el catálogo de comidas (info + ingredientes en el chat)
+    - toy   → pendiente: se conectará cuando tengamos la doc del endpoint
+    """
     query = parsed.pop("search_query", None)
+    search_type = parsed.pop("search_type", None)
     if not query:
         return parsed
+
+    if search_type == "food":
+        food = match_food(query)
+        if food:
+            extra = f"\n\n✅ Dato verificado — {food.get('name')}: {food.get('description', '')}"
+            ingredients = food.get("ingredients") or []
+            if ingredients:
+                extra += f"\n🥘 Ingredientes típicos: {', '.join(ingredients)}."
+            occasion = food.get("occasion")
+            if occasion and occasion != "everyday":
+                labels = {"christmas": "Navidad", "easter": "Semana Santa",
+                          "festival": "festivales", "patronal": "fiestas patronales"}
+                extra += f"\n🎊 Se disfruta especialmente en: {labels.get(occasion, occasion)}."
+            parsed["reply"] = parsed.get("reply", "") + extra
+        return parsed
+
+    if search_type == "toy":
+        # TODO: conectar cuando tengamos la documentación del endpoint de juguetes
+        return parsed
+
+    # Por defecto: lugares (búsqueda semántica)
     verified = search_pulgarcito(query)
     if not verified:
         return parsed
@@ -238,6 +325,9 @@ probarla o comprarla. Si no aplica, devuelve [].
 En "search_query": pon el nombre de lo que identificaste en 2-4 palabras
 (ej: "Iglesia El Rosario", "pupusas", "capirucho") para buscar datos
 verificados. Si no identificaste nada con certeza, pon null.
+
+En "search_type": clasifica lo identificado: "place" (lugar), "food" (comida
+o bebida típica) o "toy" (juguete o artesanía tradicional). Null si no aplica.
 """
 
 
