@@ -60,7 +60,7 @@
       <!-- ===== VISTA 1: HOME (pregunta grande + chips) ===== -->
       <div id="home-view" class="flex-1 flex flex-col items-center justify-center px-8 fade-in">
         <p class="text-bosque text-3xl tracking-widest font-bold mb-3">TOURISTSV</p>
-      </br>
+        <br>
         <h1 class="text-4xl font-bold text-tinta text-center leading-snug mb-8">
           ¿A dónde vamos hoy?
         </h1>
@@ -79,7 +79,7 @@
           </button>
           <button id="open-camera-home"
             class="bg-white border border-arena text-tinta text-sm rounded-full px-4 py-2.5 hover:border-real transition">
-            📷 Imagen
+            📷 Foto o imagen
           </button>
           <button id="surprise-me"
             class="bg-white border border-arena text-tinta text-sm rounded-full px-4 py-2.5 hover:border-real transition">
@@ -98,11 +98,9 @@
           <button data-mood="vibe" data-value="Playa" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🏖<br/>Playa</button>
           <button data-mood="vibe" data-value="Montaña" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">⛰<br/>Montaña</button>
           <button data-mood="vibe" data-value="Ciudad" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🏙<br/>Ciudad</button>
-          </br>
           <button data-mood="budget" data-value="Mochilero" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🎒<br/>Mochilero</button>
           <button data-mood="budget" data-value="Intermedio" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">💵<br/>Intermedio</button>
           <button data-mood="budget" data-value="Premium" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">💎<br/>Premium</button>
-          </br>
           <button data-mood="energy" data-value="Tranquilidad" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🌙<br/>Tranquilidad</button>
           <button data-mood="energy" data-value="Fiesta" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">🎉<br/>Fiesta</button>
           <button data-mood="energy" data-value="Adrenalina" class="mood-btn bg-lima-soft border-2 border-bosque/30 text-tinta rounded-2xl py-6 hover:border-bosque transition text-sm">⚡<br/>Adrenalina</button>
@@ -147,7 +145,7 @@
     <section class="flex-1 relative">
       <!-- Botón para ocultar/mostrar el chat -->
       <button id="panel-toggle" aria-label="Ocultar u mostrar el chat"
-        class="absolute left-0 top-1/2 -translate-y-1/2 z-[1000] w-8 h-14 bg-white border border-arena border-l-0
+        class="absolute left-0 top-1/2 -translate-y-1/2 z-[1000] w-7 h-14 bg-white border border-arena border-l-0
                rounded-r-xl shadow-md text-tinta-suave hover:text-real hover:border-real transition text-sm font-bold">
         ◀
       </button>
@@ -189,17 +187,30 @@
       maxZoom: 19,
     }).addTo(map);
 
-    // ===== Sitios por defecto (catálogo) =====
-    const categoryEmoji = { playa: '🏖', 'montaña': '⛰', pueblo: '🏘', cultura: '🏛', naturaleza: '🌿', ciudad: '🏙' };
+    // ===== Sitios por defecto (catálogo híbrido) =====
+    const categoryEmoji = {
+      playa: '🏖', beach: '🏖', 'montaña': '⛰', mountain: '⛰', volcano: '🌋',
+      pueblo: '🏘', town: '🏘', cultura: '🏛', museum: '🏛', church: '⛪',
+      naturaleza: '🌿', nature: '🌿', lake: '💧', ciudad: '🏙', city: '🏙',
+    };
 
     const defaultIcon = (category) => L.divIcon({
       className: '',
       html: `<div style="background:#FFFFFF;border:2px solid #2D6A23;width:26px;height:26px;
              border-radius:50%;display:flex;align-items:center;justify-content:center;
-             font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,0.3);">${categoryEmoji[category] || '📍'}</div>`,
+             font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,0.3);">${categoryEmoji[(category || '').toLowerCase()] || '📍'}</div>`,
       iconSize: [26, 26],
       iconAnchor: [13, 13],
     });
+
+    function popupHTML(p, color) {
+      const img = p.image_url
+        ? `<img src="${p.image_url}" style="width:100%;border-radius:8px;margin-bottom:6px;max-height:100px;object-fit:cover;" onerror="this.remove()" />`
+        : '';
+      const dept = p.department ? `<span style="font-size:11px;color:#4A4A4A"> · ${p.department}</span>` : '';
+      return `${img}<b style="color:${color}">${p.name}</b>${dept}<br>
+        <span style="font-size:12px;color:#111">${p.description || ''}</span>`;
+    }
 
     async function loadDefaultPlaces() {
       try {
@@ -208,7 +219,7 @@
         data.places.forEach(p => {
           L.marker([p.lat, p.lng], { icon: defaultIcon(p.category) })
             .addTo(map)
-            .bindPopup(`<b style="color:#2D6A23">${p.name}</b><br><span style="font-size:12px;color:#111">${p.description}</span>`);
+            .bindPopup(popupHTML(p, '#2D6A23'));
         });
       } catch (e) { console.error('No se pudo cargar el catálogo', e); }
     }
@@ -263,7 +274,7 @@
         setTimeout(() => {
           const marker = L.marker([p.lat, p.lng], { icon: pinIcon(i + 1) })
             .addTo(map)
-            .bindPopup(`<b style="color:#1A6DE8">${p.name}</b><br><span style="font-size:12px;color:#111">${p.description}</span>`);
+            .bindPopup(popupHTML(p, '#1A6DE8'));
           state.markers.push(marker);
           coords.push([p.lat, p.lng]);
 
@@ -474,23 +485,61 @@
       sendToAI(msg);
     });
 
-    // --- Cámara / subir imagen (funcionalidad de reconocimiento: próximamente) ---
+    // --- Cámara / subir imagen: reconocimiento con Gemini ---
     const imageInput = document.getElementById('image-input');
     document.getElementById('open-camera-home').addEventListener('click', () => imageInput.click());
     document.getElementById('open-camera-chat').addEventListener('click', () => imageInput.click());
 
-    imageInput.addEventListener('change', () => {
+    // Redimensiona la imagen a máx 1024px (más rápido de subir y suficiente para Gemini)
+    function resizeImage(file, maxSize = 1024) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+        };
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    imageInput.addEventListener('change', async () => {
       const file = imageInput.files[0];
       if (!file) return;
-      showView('chat');
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        addImageBubble(e.target.result);
-        // TODO: aquí conectaremos el reconocimiento de imágenes con Gemini
-        addBubble('📷 ¡Buena foto! Muy pronto podré reconocer lugares, comida y artesanías de El Salvador. 👀', 'ai');
-      };
-      reader.readAsDataURL(file);
       imageInput.value = '';
+      showView('chat');
+
+      const dataUrl = await resizeImage(file);
+      addImageBubble(dataUrl);
+      addTyping();
+
+      // dataUrl = "data:image/jpeg;base64,XXXX..." → separamos mime y base64
+      const [meta, imageB64] = dataUrl.split(',');
+      const mimeType = meta.match(/data:(.*?);/)[1];
+
+      try {
+        const res = await fetch('/api/vision', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: imageB64, mime_type: mimeType }),
+        });
+        const data = await res.json();
+        removeTyping();
+
+        addBubble(data.reply, 'ai');
+
+        // Guardamos el contexto para que el chat pueda seguir la conversación
+        state.history.push({ role: 'user', content: '[Envié una foto para que la identifiques]' });
+        state.history.push({ role: 'assistant', content: JSON.stringify(data) });
+
+        drawPlaces(data.places);
+      } catch (err) {
+        removeTyping();
+        addBubble('No pude analizar la imagen. Revisa tu conexión e intenta de nuevo.', 'ai');
+      }
     });
   </script>
 </body>
