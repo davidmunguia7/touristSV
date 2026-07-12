@@ -1,28 +1,237 @@
 {
   "guias": [
     {
-      "nombre": "Carlos Ramírez",
-      "telefono": "+503 7000-0001",
-      "correo": "carlos.guia@example.com",
-      "idiomas": "Español, Inglés",
-      "descripcion": "Guía certificado de surf y tours por la Costa del Bálsamo. 8 años de experiencia.",
-      "departamento": "La Libertad"
-    },
-    {
-      "nombre": "María Fernanda López",
-      "telefono": "+503 7000-0002",
-      "correo": "mafe.tours@example.com",
-      "idiomas": "Español, Inglés, Francés",
-      "descripcion": "Especialista en la Ruta de las Flores: café, gastronomía y cultura local.",
-      "departamento": "Sonsonate"
-    },
-    {
-      "nombre": "José Antonio Hernández",
-      "telefono": "+503 7000-0003",
-      "correo": "tono.trekking@example.com",
+      "nombre": "Manuel De Jesús Árevalo Trujillo",
+      "telefono": "+503 6165-7311",
+      "correo": "",
       "idiomas": "Español",
-      "descripcion": "Trekking y camping en volcanes: Santa Ana, Izalco y Cerro Verde.",
-      "departamento": "Santa Ana"
+      "descripcion": "Especialidad: ANP Complejo Los Cóbanos.",
+      "departamentos": [
+        "Sonsonate"
+      ]
+    },
+    {
+      "nombre": "Xiomara Lisseth Flores Patriz",
+      "telefono": "+503 7777-7955",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Especialidad: San Antonio del Monte y Cuisnahuat.",
+      "departamentos": [
+        "Sonsonate"
+      ]
+    },
+    {
+      "nombre": "Catarina de Los Ángeles Ramos Patriz",
+      "telefono": "+503 6139-3522",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Especialidad: San Antonio del Monte y Cuisnahuat.",
+      "departamentos": [
+        "Sonsonate"
+      ]
+    },
+    {
+      "nombre": "Osmaro Antonio Zelaya Hernández",
+      "telefono": "+503 6188-4730",
+      "correo": "",
+      "idiomas": "Inglés, Español",
+      "descripcion": "Especialidad: Zona Central.",
+      "departamentos": [
+        "San Salvador",
+        "La Libertad",
+        "Santa Ana"
+      ]
+    },
+    {
+      "nombre": "Amilcar Bladimir Argueta Escobar",
+      "telefono": "+503 7870-7367",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Especialidad: La Libertad.",
+      "departamentos": [
+        "La Libertad"
+      ]
+    },
+    {
+      "nombre": "Baltazar Cañas Monroy",
+      "telefono": "+503 7746-2737",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Especialidad: La Libertad.",
+      "departamentos": [
+        "La Libertad"
+      ]
+    },
+    {
+      "nombre": "Odir Alexander López Avila",
+      "telefono": "+503 7274-0809",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Especialidad: ANP Complejo Los Volcanes.",
+      "departamentos": [
+        "Santa Ana"
+      ]
+    },
+    {
+      "nombre": "José Manuel Aguilar Tula",
+      "telefono": "+503 7558-7134",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Especialidad: ANP Complejo Los Volcanes.",
+      "departamentos": [
+        "Santa Ana"
+      ]
+    },
+    {
+      "nombre": "Héctor Adonis Cordero Gámez",
+      "telefono": "+503 7628-3228",
+      "correo": "",
+      "idiomas": "Inglés, Español",
+      "descripcion": "Especialidad: Ecológico, Aventura, Arqueológico. Cobertura a nivel nacional.",
+      "departamentos": [
+        "Nacional"
+      ]
+    },
+    {
+      "nombre": "Keissy Crisell Franco Moreno",
+      "telefono": "+503 7851-6440",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Especialidad: Memoria Histórica en Aguilares, El Paisnal y Guazapa.",
+      "departamentos": [
+        "San Salvador"
+      ]
+    },
+    {
+      "nombre": "Carlos Alfredo Menjivar Morales",
+      "telefono": "+503 7789-1211",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Especialidad: Zona Central.",
+      "departamentos": [
+        "San Salvador",
+        "La Libertad"
+      ]
+    },
+    {
+      "nombre": "Carlos Eduardo Guardado Hernández",
+      "telefono": "+503 7644-6685",
+      "correo": "",
+      "idiomas": "Inglés, Portugués, Español",
+      "descripcion": "Especialidad: Centro Histórico de San Salvador.",
+      "departamentos": [
+        "San Salvador"
+      ]
+    },
+    {
+      "nombre": "Rosa Elena Mendoza (demo)",
+      "telefono": "+503 7000-0001",
+      "correo": "",
+      "idiomas": "Español, Inglés",
+      "descripcion": "Perfil de demostración — Ruta de las Flores, fincas de café y El Imposible.",
+      "departamentos": [
+        "Ahuachapán"
+      ]
+    },
+    {
+      "nombre": "Miguel Ángel Rivera (demo)",
+      "telefono": "+503 7000-0002",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Perfil de demostración — El Pital, La Palma y senderismo de altura.",
+      "departamentos": [
+        "Chalatenango"
+      ]
+    },
+    {
+      "nombre": "Ana Beatriz Cortez (demo)",
+      "telefono": "+503 7000-0003",
+      "correo": "",
+      "idiomas": "Español, Inglés",
+      "descripcion": "Perfil de demostración — Suchitoto colonial, lago Suchitlán y Cascada Los Tercios.",
+      "departamentos": [
+        "Cuscatlán"
+      ]
+    },
+    {
+      "nombre": "Jorge Luis Campos (demo)",
+      "telefono": "+503 7000-0004",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Perfil de demostración — Costa del Sol, estero de Jaltepeque y pesca artesanal.",
+      "departamentos": [
+        "La Paz"
+      ]
+    },
+    {
+      "nombre": "María José Alvarado (demo)",
+      "telefono": "+503 7000-0005",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Perfil de demostración — Ilobasco y talleres de artesanía en barro.",
+      "departamentos": [
+        "Cabañas"
+      ]
+    },
+    {
+      "nombre": "Ricardo Ernesto Peña (demo)",
+      "telefono": "+503 7000-0006",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Perfil de demostración — Volcán Chichontepec y pueblos de San Vicente.",
+      "departamentos": [
+        "San Vicente"
+      ]
+    },
+    {
+      "nombre": "Claudia Vanessa Reyes (demo)",
+      "telefono": "+503 7000-0007",
+      "correo": "",
+      "idiomas": "Español, Inglés",
+      "descripcion": "Perfil de demostración — Bahía de Jiquilisco, Alegría y ruta del café de Berlín.",
+      "departamentos": [
+        "Usulután"
+      ]
+    },
+    {
+      "nombre": "Óscar Armando Fuentes (demo)",
+      "telefono": "+503 7000-0008",
+      "correo": "",
+      "idiomas": "Español, Inglés",
+      "descripcion": "Perfil de demostración — Playa Las Flores, El Cuco y surf en oriente.",
+      "departamentos": [
+        "San Miguel"
+      ]
+    },
+    {
+      "nombre": "Silvia Carolina Amaya (demo)",
+      "telefono": "+503 7000-0009",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Perfil de demostración — Perquín, Ruta de la Paz y memoria histórica de Morazán.",
+      "departamentos": [
+        "Morazán"
+      ]
+    },
+    {
+      "nombre": "Douglas Alexander Chávez (demo)",
+      "telefono": "+503 7000-0010",
+      "correo": "",
+      "idiomas": "Español",
+      "descripcion": "Perfil de demostración — Golfo de Fonseca, Conchagua y sus islas.",
+      "departamentos": [
+        "La Unión"
+      ]
+    },
+    {
+      "nombre": "David Eliezer",
+      "telefono": "+503 7893-0403",
+      "correo": "",
+      "idiomas": "Español, Inglés",
+      "descripcion": "",
+      "departamentos": [
+        "Sonsonate"
+      ]
     }
   ]
 }

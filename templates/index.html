@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Otli — Tu guía inteligente de El Salvador</title>
+  <link rel="icon" type="image/png" href="/static/img/logo.png" />
+  <title>Otli</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -47,6 +48,18 @@
     }
     .fade-in { animation: fadeIn 0.35s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    /* Micrófono grabando */
+    .mic-active {
+      background: #DC2626 !important;
+      border-color: #DC2626 !important;
+      color: #fff !important;
+      animation: micPulse 1.2s ease-in-out infinite;
+    }
+    @keyframes micPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.45); }
+      50% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+    }
 
     /* Marcadores destacados para regeneración cultural */
     .culture-marker-wrap {
@@ -113,7 +126,7 @@
           <!-- Marca -->
           <div class="flex items-center gap-2.5 mb-6">
             <span class="grid h-10 w-10 place-items-center rounded-xl bg-bosque text-white font-sans font-extrabold text-sm shadow-lg shadow-bosque/20">OT</span>
-            <span class="font-mono text-xs font-bold tracking-[0.25em] text-bosque uppercase">Otli</span>
+            <span class="font-mono text-xs font-bold tracking-[0.25em] text-bosque uppercase">OTLI</span>
           </div>
 
           <!-- Pregunta principal -->
@@ -128,6 +141,8 @@
           <form id="home-form" class="w-full max-w-md flex gap-2 mb-5">
             <input id="home-input" type="text" placeholder="Pregúntale a tu guía..."
               class="flex-1 bg-white border border-arena rounded-full px-5 py-3 text-sm text-tinta placeholder-tinta-suave/60 focus:outline-none focus:border-real shadow-sm" />
+            <button type="button" id="mic-home" aria-label="Hablar con Ohtli"
+              class="w-12 h-12 rounded-full bg-white border border-arena text-lg hover:border-real transition flex-shrink-0 shadow-sm">🎤</button>
             <button type="submit" aria-label="Enviar"
               class="w-12 h-12 rounded-full bg-real text-white font-bold hover:bg-real-dark transition flex-shrink-0 shadow-md shadow-real/20">➤</button>
           </form>
@@ -337,9 +352,11 @@
         <header class="px-5 py-4 border-b border-arena flex items-center gap-3">
           <span class="grid h-9 w-9 place-items-center rounded-lg bg-bosque text-white font-sans font-extrabold text-xs shadow-sm">OA</span>
           <div class="flex-1">
-            <p class="text-bosque text-[11px] tracking-[0.2em] font-bold uppercase">Ohtli AI</p>
+            <p class="text-bosque text-[11px] tracking-[0.2em] font-bold uppercase">Otli</p>
             <h1 class="text-sm font-medium text-tinta">Tu guía inteligente de El Salvador</h1>
           </div>
+          <button id="voice-toggle" title="Respuestas por voz"
+            class="w-9 h-9 rounded-full border border-arena text-base text-tinta-suave hover:border-real transition flex-shrink-0">🔇</button>
           <button id="reset-chat" title="Nuevo chat"
             class="flex items-center gap-1.5 text-xs text-tinta-suave border border-arena rounded-full px-3 py-2 hover:border-real hover:text-real transition flex-shrink-0">
             ↺ Nuevo chat
@@ -352,6 +369,8 @@
           <form id="chat-form" class="flex gap-2 items-center">
             <button type="button" id="open-camera-chat" aria-label="Foto o imagen"
               class="w-11 h-11 rounded-full border border-arena text-lg hover:border-real transition flex-shrink-0">📷</button>
+            <button type="button" id="mic-chat" aria-label="Hablar con Ohtli"
+              class="w-11 h-11 rounded-full border border-arena text-lg hover:border-real transition flex-shrink-0">🎤</button>
             <input id="chat-input" type="text" placeholder="Pregúntale a tu guía..."
               class="flex-1 bg-white border border-arena rounded-full px-4 py-2.5 text-sm text-tinta placeholder-tinta-suave/60 focus:outline-none focus:border-real" />
             <button type="submit" aria-label="Enviar"
@@ -427,7 +446,7 @@
 
     // ===== Sitios por defecto (catálogo híbrido) =====
     const categoryEmoji = {
-      playa: '🏖', beach: '🏖', 'montaña': '⛰', mountain: '⛰', volcano: '🌋',
+      playa: '🏖', beach: '🏖', 'montaña': '⛰', montana: '⛰', mountain: '⛰', volcano: '🌋',
       pueblo: '🏘', town: '🏘', cultura: '🏛', museum: '🏛', church: '⛪',
       naturaleza: '🌿', nature: '🌿', lake: '💧', ciudad: '🏙', city: '🏙',
     };
@@ -441,31 +460,14 @@
     }
 
     function isCulturalRegenerationPlace(place) {
-      const category = normalizePlaceText(place.category);
-      const description = normalizePlaceText(place.description);
+      // SOLO por tag explícito en places.json: el equipo decide qué lugares
+      // se marcan, agregándoles el tag "regeneración cultural".
+      // (Detectar por palabras en la descripción daba falsos positivos,
+      //  ej: Joya de Cerén por decir "Patrimonio de la Humanidad".)
       const tags = Array.isArray(place.tags)
         ? place.tags.map(normalizePlaceText)
         : [];
-
-      const combinedText = [category, description, ...tags].join(' ');
-
-      const culturalSignals = [
-        'regeneracion cultural',
-        'regeneracion',
-        'patrimonio',
-        'patrimonio industrial',
-        'mercado historico',
-        'centro historico',
-        'barrio historico',
-        'arte urbano',
-        'pueblo cultural',
-        'memoria historica',
-        'centro cultural',
-        'museo comunitario',
-        'recuperacion comunitaria',
-      ];
-
-      return culturalSignals.some(signal => combinedText.includes(signal));
+      return tags.includes('regeneracion cultural');
     }
 
     const defaultIcon = (place) => {
@@ -590,10 +592,11 @@
       }
       return results.map(g => {
         const tel = (g.telefono || '').replace(/[^+\d]/g, '');
+        const zonas = (g.departamentos || [g.departamento]).filter(Boolean).join(', ');
         return `<div style="margin-top:8px;padding:8px;border:1px solid #E8F2EC;background:#F7FBF5;border-radius:10px;">
           <b style="font-size:13px;color:#2D6A23">👤 ${g.nombre}</b><br>
           ${g.descripcion ? `<span style="font-size:12px;color:#111">${g.descripcion}</span><br>` : ''}
-          <span style="font-size:12px;color:#4A4A4A">🗣 ${g.idiomas || 'Español'} · 📍 ${g.departamento}</span><br>
+          <span style="font-size:12px;color:#4A4A4A">🗣 ${g.idiomas || 'Español'} · 📍 ${zonas}</span><br>
           <a href="https://wa.me/${tel.replace('+','')}" target="_blank"
             style="display:inline-block;margin-top:5px;background:#2D6A23;color:#fff;border-radius:10px;
             padding:4px 10px;font-size:12px;text-decoration:none;">💬 Contactar por WhatsApp</a>
@@ -639,7 +642,8 @@
         el.textContent = 'Buscando guías...';
         let html;
         try {
-          const res = await fetch(`/api/guides?lat=${p.lat}&lng=${p.lng}`);
+          const dept = encodeURIComponent(p.department || '');
+          const res = await fetch(`/api/guides?lat=${p.lat}&lng=${p.lng}&dept=${dept}`);
           const data = await res.json();
           html = guideCardsHTML(data.results);
         } catch (err) {
@@ -904,6 +908,12 @@
         state.history.push({ role: 'user', content: message });
         state.history.push({ role: 'assistant', content: JSON.stringify(data) });
 
+        // Responder con voz si le hablaron o si el toggle 🔊 está activo
+        if (state.speakNext || state.voiceReply) {
+          speak(data.reply);
+          state.speakNext = false;
+        }
+
         drawPlaces(data.places);
       } catch (err) {
         removeTyping();
@@ -988,6 +998,8 @@
 
     // --- Reiniciar chat ---
     document.getElementById('reset-chat').addEventListener('click', () => {
+      // Silenciar cualquier respuesta hablada en curso
+      if ('speechSynthesis' in window) speechSynthesis.cancel();
       // Limpiar conversación e historial de la IA
       chatEl.innerHTML = '';
       state.history = [];
@@ -1026,6 +1038,97 @@
       input.value = '';
       addBubble(msg, 'user');
       sendToAI(msg);
+    });
+
+    // ================== VOZ: HABLARLE A OHTLI Y QUE RESPONDA ==================
+    // Reconocimiento de voz (Web Speech API — Chrome/Edge/Safari)
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    state.speakNext = false;   // responder con voz si el mensaje llegó por voz
+    state.voiceReply = false;  // toggle manual: leer todas las respuestas
+
+    if (!SR) {
+      // Navegador sin soporte: ocultamos los micrófonos
+      document.getElementById('mic-home')?.remove();
+      document.getElementById('mic-chat')?.remove();
+    } else {
+      const recognition = new SR();
+      recognition.lang = 'es-SV';
+      recognition.interimResults = true;
+      recognition.continuous = false;
+
+      let activeMic = null;   // botón activo
+      let activeInput = null; // input donde se escribe lo dictado
+      let finalText = '';
+
+      function stopMicUI() {
+        activeMic?.classList.remove('mic-active');
+        if (activeMic) activeMic.textContent = '🎤';
+        activeMic = null;
+      }
+
+      function startMic(btn, input) {
+        if (activeMic) { recognition.stop(); return; } // ya grabando: detener
+        activeMic = btn;
+        activeInput = input;
+        finalText = '';
+        btn.classList.add('mic-active');
+        btn.textContent = '■';
+        input.placeholder = 'Escuchando...';
+        try { recognition.start(); } catch (e) { stopMicUI(); }
+      }
+
+      recognition.onresult = (e) => {
+        let interim = '', final = '';
+        for (const r of e.results) (r.isFinal ? final += r[0].transcript : interim += r[0].transcript);
+        if (final) finalText = final;
+        if (activeInput) activeInput.value = finalText || interim;
+      };
+
+      recognition.onend = () => {
+        stopMicUI();
+        if (activeInput) activeInput.placeholder = 'Pregúntale a tu guía...';
+        const msg = (finalText || activeInput?.value || '').trim();
+        if (msg) {
+          activeInput.value = '';
+          state.speakNext = true;   // le hablaron → Ohtli responde hablando
+          goToChatAndSend(msg);
+        }
+      };
+
+      recognition.onerror = () => {
+        stopMicUI();
+        if (activeInput) activeInput.placeholder = 'Pregúntale a tu guía...';
+      };
+
+      document.getElementById('mic-home').addEventListener('click', function () {
+        startMic(this, document.getElementById('home-input'));
+      });
+      document.getElementById('mic-chat').addEventListener('click', function () {
+        startMic(this, document.getElementById('chat-input'));
+      });
+    }
+
+    // Síntesis de voz: Ohtli lee su respuesta
+    function speak(text) {
+      if (!('speechSynthesis' in window) || !text) return;
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'es-US';
+      const voice = speechSynthesis.getVoices().find(v => v.lang.startsWith('es'));
+      if (voice) u.voice = voice;
+      u.rate = 1;
+      speechSynthesis.speak(u);
+    }
+    // Algunas plataformas cargan las voces de forma asíncrona
+    if ('speechSynthesis' in window) speechSynthesis.getVoices();
+
+    // Toggle manual: leer TODAS las respuestas en voz alta
+    document.getElementById('voice-toggle').addEventListener('click', function () {
+      state.voiceReply = !state.voiceReply;
+      this.textContent = state.voiceReply ? '🔊' : '🔇';
+      this.classList.toggle('border-real', state.voiceReply);
+      this.classList.toggle('text-real', state.voiceReply);
+      if (!state.voiceReply) speechSynthesis.cancel();
     });
 
     // --- Cámara / subir imagen: reconocimiento con Gemini ---

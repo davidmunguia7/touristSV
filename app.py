@@ -297,19 +297,30 @@ def guia():
 # ============ API DE GUÍAS TURÍSTICOS ============
 @app.route("/api/guides")
 def get_guides():
-    """Devuelve los guías que cubren la zona de un pin (por departamento cercano)."""
+    """Devuelve SOLO los guías del departamento del pin (más los de
+    cobertura Nacional). Si el pin no trae departamento, se infiere
+    el más cercano por distancia."""
     try:
         lat = float(request.args.get("lat"))
         lng = float(request.args.get("lng"))
     except (TypeError, ValueError):
         return jsonify({"results": []}), 400
 
+    dept = (request.args.get("dept") or "").strip()
+
+    # Si el pin no trae departamento válido, inferimos el más cercano
+    if dept not in DEPT_CENTERS:
+        dept = min(
+            DEPT_CENTERS,
+            key=lambda d: haversine_km(lat, lng, DEPT_CENTERS[d][0], DEPT_CENTERS[d][1]),
+        )
+
     results = []
     for g in load_guias():
-        center = DEPT_CENTERS.get(g.get("departamento"))
-        if center and haversine_km(lat, lng, center[0], center[1]) <= 50:
+        depts = g.get("departamentos") or ([g["departamento"]] if g.get("departamento") else [])
+        if "Nacional" in depts or dept in depts:
             results.append(g)
-    return jsonify({"results": results})
+    return jsonify({"results": results, "department": dept})
 
 
 @app.route("/api/guides", methods=["POST"])
@@ -330,7 +341,7 @@ def add_guide():
         "correo": (data.get("correo") or "").strip(),
         "idiomas": (data.get("idiomas") or "").strip(),
         "descripcion": (data.get("descripcion") or "").strip(),
-        "departamento": departamento,
+        "departamentos": [departamento],
     })
     save_guias(guias)
     return jsonify({"ok": True})
